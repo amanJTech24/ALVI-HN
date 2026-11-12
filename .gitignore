@@ -13,7 +13,11 @@
 *.pfx
 *.secret
 *.credentials
+*.token
+tokens/
 secrets/
+*.api_key
+api_keys/
 
 # ── Dependencies ───────────────────────────────
 node_modules/
@@ -22,9 +26,10 @@ vendor/
 package-lock.json
 yarn.lock
 
-# ── Python (if added later) ────────────────────
+# ── Python ─────────────────────────────────────
 __pycache__/
 *.py[cod]
+*$py.class
 *.pyo
 venv/
 .venv/
@@ -32,6 +37,41 @@ env/
 *.egg-info/
 dist/
 build/
+.pytest_cache/
+
+# ── Audio & Personal Voice Recordings ──────────
+*.wav
+*.mp3
+*.webm
+*.ogg
+*.m4a
+*.flac
+*.aac
+recordings/
+uploads/
+audio_recordings/
+
+# ── Machine Learning Models & Large Artifacts ──
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+*.pkl
+*.pickle
+*.joblib
+*.bin
+*.model
+*.weights
+models/
+model/
+
+# ── Private Datasets ───────────────────────────
+data/
+datasets/
+dataset/
+*.parquet
+*.arrow
 
 # ── IDE / Editor ───────────────────────────────
 .vscode/
@@ -43,7 +83,7 @@ build/
 Thumbs.db
 desktop.ini
 
-# ── OS Generated ──────────────────────────────
+# ── OS & Temporary Files ───────────────────────
 *.tmp
 *.temp
 *.log
