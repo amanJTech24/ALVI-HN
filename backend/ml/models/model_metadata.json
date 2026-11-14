@@ -1,0 +1,208 @@
+{
+  "model_version": "1.0.0-experimental",
+  "selected_model_name": "Random_Forest",
+  "selected_model_type": "RandomForestClassifier",
+  "best_hyperparameters": {
+    "classifier__class_weight": "balanced",
+    "classifier__max_depth": null,
+    "classifier__min_samples_split": 5,
+    "classifier__n_estimators": 100
+  },
+  "class_label_mapping": {
+    "0": "nodementia",
+    "1": "dementia"
+  },
+  "feature_count": 79,
+  "feature_schema": [
+    "mfcc_1_mean",
+    "mfcc_1_std",
+    "mfcc_2_mean",
+    "mfcc_2_std",
+    "mfcc_3_mean",
+    "mfcc_3_std",
+    "mfcc_4_mean",
+    "mfcc_4_std",
+    "mfcc_5_mean",
+    "mfcc_5_std",
+    "mfcc_6_mean",
+    "mfcc_6_std",
+    "mfcc_7_mean",
+    "mfcc_7_std",
+    "mfcc_8_mean",
+    "mfcc_8_std",
+    "mfcc_9_mean",
+    "mfcc_9_std",
+    "mfcc_10_mean",
+    "mfcc_10_std",
+    "mfcc_11_mean",
+    "mfcc_11_std",
+    "mfcc_12_mean",
+    "mfcc_12_std",
+    "mfcc_13_mean",
+    "mfcc_13_std",
+    "mfcc_delta_1_mean",
+    "mfcc_delta_1_std",
+    "mfcc_delta_2_mean",
+    "mfcc_delta_2_std",
+    "mfcc_delta_3_mean",
+    "mfcc_delta_3_std",
+    "mfcc_delta_4_mean",
+    "mfcc_delta_4_std",
+    "mfcc_delta_5_mean",
+    "mfcc_delta_5_std",
+    "mfcc_delta_6_mean",
+    "mfcc_delta_6_std",
+    "mfcc_delta_7_mean",
+    "mfcc_delta_7_std",
+    "mfcc_delta_8_mean",
+    "mfcc_delta_8_std",
+    "mfcc_delta_9_mean",
+    "mfcc_delta_9_std",
+    "mfcc_delta_10_mean",
+    "mfcc_delta_10_std",
+    "mfcc_delta_11_mean",
+    "mfcc_delta_11_std",
+    "mfcc_delta_12_mean",
+    "mfcc_delta_12_std",
+    "mfcc_delta_13_mean",
+    "mfcc_delta_13_std",
+    "zcr_mean",
+    "zcr_std",
+    "f0_voiced_ratio",
+    "f0_mean",
+    "f0_std",
+    "f0_min",
+    "f0_max",
+    "rms_mean",
+    "rms_std",
+    "rms_min",
+    "rms_max",
+    "spectral_centroid_mean",
+    "spectral_centroid_std",
+    "spectral_bandwidth_mean",
+    "spectral_bandwidth_std",
+    "spectral_rolloff_mean",
+    "spectral_rolloff_std",
+    "spectral_flatness_mean",
+    "spectral_flatness_std",
+    "duration_seconds",
+    "active_duration_seconds",
+    "low_energy_frame_ratio",
+    "low_energy_interval_count",
+    "low_energy_interval_mean_duration",
+    "hnr_proxy_db",
+    "spectral_contrast_mean",
+    "spectral_contrast_std"
+  ],
+  "split_information": {
+    "train_samples": 75,
+    "test_samples": 25,
+    "train_speakers_count": 64,
+    "test_speakers_count": 16,
+    "train_class_distribution": {
+      "1": 36,
+      "0": 39
+    },
+    "test_class_distribution": {
+      "1": 17,
+      "0": 8
+    },
+    "speaker_overlap_count": 0
+  },
+  "all_model_results": {
+    "Logistic_Regression": {
+      "cv_best_balanced_accuracy": 0.5393,
+      "best_params": {
+        "classifier__C": 1.0,
+        "classifier__class_weight": "balanced",
+        "classifier__max_iter": 1000,
+        "classifier__solver": "lbfgs"
+      },
+      "test_metrics": {
+        "accuracy": 0.52,
+        "balanced_accuracy": 0.4816,
+        "precision": 0.6667,
+        "recall_sensitivity": 0.5882,
+        "specificity": 0.375,
+        "f1_score": 0.625,
+        "confusion_matrix": {
+          "tn": 3,
+          "fp": 5,
+          "fn": 7,
+          "tp": 10
+        },
+        "roc_auc": 0.4485
+      }
+    },
+    "Random_Forest": {
+      "cv_best_balanced_accuracy": 0.6179,
+      "best_params": {
+        "classifier__class_weight": "balanced",
+        "classifier__max_depth": null,
+        "classifier__min_samples_split": 5,
+        "classifier__n_estimators": 100
+      },
+      "test_metrics": {
+        "accuracy": 0.68,
+        "balanced_accuracy": 0.6324,
+        "precision": 0.7647,
+        "recall_sensitivity": 0.7647,
+        "specificity": 0.5,
+        "f1_score": 0.7647,
+        "confusion_matrix": {
+          "tn": 4,
+          "fp": 4,
+          "fn": 4,
+          "tp": 13
+        },
+        "roc_auc": 0.5662
+      }
+    },
+    "Support_Vector_Machine": {
+      "cv_best_balanced_accuracy": 0.6179,
+      "best_params": {
+        "classifier__C": 1.0,
+        "classifier__class_weight": "balanced",
+        "classifier__gamma": "scale",
+        "classifier__kernel": "rbf",
+        "classifier__probability": true
+      },
+      "test_metrics": {
+        "accuracy": 0.6,
+        "balanced_accuracy": 0.5735,
+        "precision": 0.7333,
+        "recall_sensitivity": 0.6471,
+        "specificity": 0.5,
+        "f1_score": 0.6875,
+        "confusion_matrix": {
+          "tn": 4,
+          "fp": 4,
+          "fn": 6,
+          "tp": 11
+        },
+        "roc_auc": 0.5221
+      }
+    }
+  },
+  "best_model_test_metrics": {
+    "accuracy": 0.68,
+    "balanced_accuracy": 0.6324,
+    "precision": 0.7647,
+    "recall_sensitivity": 0.7647,
+    "specificity": 0.5,
+    "f1_score": 0.7647,
+    "confusion_matrix": {
+      "tn": 4,
+      "fp": 4,
+      "fn": 4,
+      "tp": 13
+    },
+    "roc_auc": 0.5662
+  },
+  "provenance_and_governance": {
+    "dataset_source": "DementiaNet Interview Corpus (Cleaned Subset)",
+    "cleaning_protocol": "Pruned 76 cross-group duplicate hash pairs (152 rows) and 32 contradictory multi-class speakers (72 rows).",
+    "participant_independence": "Strictly enforced via GroupShuffleSplit and StratifiedGroupKFold on speaker_id. Zero speaker leakage.",
+    "clinical_disclaimer": "ALVI model is an exploratory research benchmark trained on public interviews. It is NOT clinically validated, does NOT diagnose Alzheimer's disease, and does NOT predict clinical risk."
+  }
+}

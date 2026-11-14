@@ -317,12 +317,18 @@
                   <span id="record-btn-text">Start Recording</span>
                 </button>
 
+                <button id="analyze-voice-btn"
+                  class="hidden px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-lg shadow-emerald-600/40 flex items-center space-x-2 transition text-sm">
+                  <span>⚡</span>
+                  <span id="analyze-btn-text">Analyze with ML</span>
+                </button>
+
                 <button id="reset-record-btn"
                   class="hidden px-4 py-3.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-semibold transition">
                   🔄 Retry
                 </button>
 
-                <!-- NEW FRONTEND-ONLY IMPLEMENTATION: Audio File Import Option -->
+                <!-- Audio File Import Option -->
                 <label id="import-voice-audio-label"
                   class="cursor-pointer px-4 py-3.5 bg-slate-800/80 hover:bg-slate-700 text-slate-300 rounded-2xl text-xs font-semibold transition flex items-center space-x-1.5 border border-slate-700">
                   <span>📁</span>
@@ -334,10 +340,18 @@
               <p id="record-status-text" class="text-xs text-slate-400">Click to start recording your response aloud, or
                 import a pre-recorded audio sample.</p>
 
-              <!-- NEW FRONTEND-ONLY IMPLEMENTATION: Real-time Feature Metrics Badge -->
+              <!-- Genuine Real-time Feature Metrics Badge (ML Extracted) -->
               <div id="voice-feature-metrics"
-                class="hidden w-full max-w-lg mt-2 p-3 bg-slate-950/90 rounded-xl border border-indigo-500/30 text-[11px] text-slate-300">
-                <div class="grid grid-cols-4 gap-2 text-center">
+                class="hidden w-full max-w-lg mt-2 p-3 bg-slate-950/90 rounded-xl border border-indigo-500/30 text-[11px] text-slate-300 space-y-2">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-1.5 text-[10px] text-indigo-400 font-semibold uppercase tracking-wider">
+                  <span>Acoustic Measurements</span>
+                  <span id="metric-features-count" class="text-emerald-400 font-mono">79 Features Extracted</span>
+                </div>
+                <div class="grid grid-cols-5 gap-2 text-center">
+                  <div>
+                    <span class="text-slate-500 block text-[9px] uppercase font-bold">Pitch (F0)</span>
+                    <span id="metric-pitch" class="font-mono text-indigo-300 font-bold">—</span>
+                  </div>
                   <div>
                     <span class="text-slate-500 block text-[9px] uppercase font-bold">RMS Energy</span>
                     <span id="metric-rms" class="font-mono text-indigo-400 font-bold">—</span>
@@ -355,6 +369,35 @@
                     <span id="metric-centroid" class="font-mono text-indigo-400 font-bold">—</span>
                   </div>
                 </div>
+              </div>
+
+              <!-- ML Research Classification Pill (Non-Diagnostic) -->
+              <div id="voice-ml-prediction-card"
+                class="hidden w-full max-w-lg p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-left space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                    <span>🔬</span>
+                    <span>Exploratory Research Classification</span>
+                  </span>
+                  <span id="prediction-model-version" class="text-[9px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
+                    Model: v1.0.0-experimental
+                  </span>
+                </div>
+                <div class="flex items-center justify-between pt-1">
+                  <div>
+                    <span class="text-[10px] text-slate-400 block">Research Label</span>
+                    <span id="prediction-label-badge" class="px-2 py-0.5 rounded text-xs font-black uppercase font-mono bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                      —
+                    </span>
+                  </div>
+                  <div class="text-right">
+                    <span class="text-[10px] text-slate-400 block">Raw Score (Tree Vote Fraction)</span>
+                    <span id="prediction-raw-score" class="font-mono font-bold text-slate-200 text-xs">—</span>
+                  </div>
+                </div>
+                <p id="prediction-disclaimer-text" class="text-[9px] text-slate-400 border-t border-slate-800/80 pt-1 leading-tight">
+                  ⚠️ ALVI is an exploratory cognitive pattern screening prototype. This output is NOT a medical diagnosis, does NOT assess clinical Alzheimer's risk, and has NOT been clinically validated.
+                </p>
               </div>
             </div>
 
@@ -377,6 +420,7 @@
   <script src="js/app.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/audio_analysis.js"></script>
   <script src="js/dataset.js"></script>
   <script src="js/session.js"></script>

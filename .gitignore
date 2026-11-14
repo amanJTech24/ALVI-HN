@@ -5,6 +5,7 @@
 # ── Environment & Secrets ──────────────────────
 .env
 .env.*
+!.env.example
 .env.local
 .env.production
 *.key
@@ -65,13 +66,19 @@ audio_recordings/
 *.weights
 models/
 model/
+# Explicit whitelist for ALVI lightweight deployed model artifacts
+!backend/ml/models/
+!backend/ml/models/**
 
 # ── Private Datasets ───────────────────────────
-data/
+data/*
+!data/processed/
+!data/processed/**
 datasets/
 dataset/
 *.parquet
 *.arrow
+data/dementianet/
 
 # ── IDE / Editor ───────────────────────────────
 .vscode/

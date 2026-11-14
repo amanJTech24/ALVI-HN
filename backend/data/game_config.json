@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "task_name": "MindPlay Tri-Challenge Cognitive Assessment",
+  "narrative_context": "aarav_story_v1",
+  "challenges": {
+    "ch1_remember": {
+      "id": "ch1_remember",
+      "step_number": 1,
+      "name": "Challenge 1: Remember",
+      "subtitle": "Dual-Memory Recognition & Binding",
+      "cognitive_domain": "Episodic Visual-Verbal Memory",
+      "prompt": "Which items were mentioned in the story?",
+      "target_items": ["umbrella", "apples"],
+      "distractor_items": ["bicycle", "books"],
+      "total_targets": 2,
+      "total_options": 4,
+      "weight": 0.35,
+      "scoring_rule": "2 points max: +1.0 per correct target selected, -0.5 per distractor selected (floor 0)."
+    },
+    "ch2_sequence": {
+      "id": "ch2_sequence",
+      "step_number": 2,
+      "name": "Challenge 2: Sequence",
+      "subtitle": "Chronological Event Organization",
+      "cognitive_domain": "Working Memory & Executive Sequencing",
+      "prompt": "Put these events in the order they happened.",
+      "items": [
+        { "id": 1, "text": "Aarav left home", "correct_order": 1 },
+        { "id": 2, "text": "Aarav went to the market", "correct_order": 2 },
+        { "id": 3, "text": "Aarav bought apples", "correct_order": 3 },
+        { "id": 4, "text": "Aarav met Meera", "correct_order": 4 },
+        { "id": 5, "text": "Aarav returned home", "correct_order": 5 }
+      ],
+      "initial_scrambled_order": [1, 3, 2, 5, 4],
+      "target_order": [1, 2, 3, 4, 5],
+      "total_events": 5,
+      "total_pairs": 10,
+      "min_swaps_to_solve": 2,
+      "weight": 0.35,
+      "scoring_rule": "Based on Kendall tau distance (inversions out of 10 pairs). Inversion ratio: (1.0 - inv/10) * 100%."
+    },
+    "ch3_find": {
+      "id": "ch3_find",
+      "step_number": 3,
+      "name": "Challenge 3: Find",
+      "subtitle": "Visual Feature Matching & Reaction Latency",
+      "cognitive_domain": "Processing Speed & Sustained Attention",
+      "prompt": "Find the item Aarav carried because it was raining.",
+      "target_item": "umbrella",
+      "distractor_items": ["apples", "raincoat"],
+      "total_options": 3,
+      "min_valid_latency_ms": 150.0,
+      "optimal_latency_ms": 2200.0,
+      "slow_latency_ms": 4800.0,
+      "max_tolerated_latency_ms": 30000.0,
+      "weight": 0.30,
+      "scoring_rule": "Correctness (0 or 100%) combined with reaction latency efficiency score."
+    }
+  },
+  "composite_weights": {
+    "ch1_remember": 0.35,
+    "ch2_sequence": 0.35,
+    "ch3_find": 0.30
+  },
+  "performance_bands": [
+    { "min": 85.0, "band": "High Performance", "description": "Accurate memory binding, intact temporal sequencing, and prompt reaction latency." },
+    { "min": 65.0, "band": "Moderate Performance", "description": "Solid overall task execution with minor sequencing transposition or mild response hesitation." },
+    { "min": 40.0, "band": "Mild Performance Variance", "description": "Partial task recall, sequence fragmentation, or notable search latency." },
+    { "min": 0.0, "band": "Low / Incomplete Performance", "description": "Multiple incorrect responses, significant sequencing inversions, or task skipped." }
+  ],
+  "disclaimer": "MindPlay cognitive challenges are experimental, non-clinical behavioral measurements designed to evaluate task accuracy, working memory sequencing, and search latency. They do NOT provide a clinical diagnosis of Alzheimer's disease, dementia, or cognitive impairment."
+}
+

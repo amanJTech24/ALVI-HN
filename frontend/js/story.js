@@ -76,79 +76,232 @@ document.addEventListener('DOMContentLoaded', () => {
   let recordedChunks = [];
   let playbackURL    = null;
 
-  // NEW FRONTEND-ONLY IMPLEMENTATION: Browser Speech-to-Text & Fact Scoring State
+  // Story Recall NLP Evaluation State
   let recognition = null;
   let liveTranscript = '';
+  let isEvaluatingNLP = false;
 
-  const STORY_FACT_RULES = [
-    { id: 'aarav', label: 'Aarav (Protagonist)', regex: /\b(aarav|arav|arrav|aurav|the boy|the man)\b/i },
-    { id: 'rain', label: 'Rainy morning', regex: /\b(rain|rainy|raining|storm)\b/i },
-    { id: 'umbrella', label: 'Blue umbrella', regex: /\b(umbrella|parasol)\b/i },
-    { id: 'market', label: 'Local market', regex: /\b(market|shop|store|bazaar)\b/i },
-    { id: 'apples', label: 'Bought three red apples', regex: /\b(apple|apples|fruit)\b/i },
-    { id: 'meera', label: 'Met friend Meera', regex: /\b(meera|mira|his friend|a friend|friend)\b/i },
-    { id: 'gave', label: 'Gave her one apple', regex: /\b(gave|give|shared|gifted|handed)\b/i },
-    { id: 'home', label: 'Returned home', regex: /\b(home|returned|came back|went back)\b/i }
-  ];
-
-  function scoreStoryRecall(transcriptText, timingSeconds, inputMode = 'voice') {
+  /**
+   * Evaluates participant recall transcript using the explainable FastAPI NLP engine.
+   * Handles both voice Speech-to-Text and typed input modes.
+   */
+  async function scoreStoryRecall(transcriptText, timingSeconds, inputMode = 'voice') {
     const text = (transcriptText || '').trim();
-    const recalled = [];
-    const missed = [];
-
-    STORY_FACT_RULES.forEach(fact => {
-      if (fact.regex.test(text)) {
-        recalled.push(fact.label);
-      } else {
-        missed.push(fact.label);
-      }
-    });
-
-    const scorePercent = Math.round((recalled.length / STORY_FACT_RULES.length) * 100);
 
     const scoreCard = document.getElementById('fact-scoring-card');
     const scoreHeading = document.getElementById('fact-score-heading');
     const scoreBadge = document.getElementById('fact-score-badge');
+    const bandDesc = document.getElementById('fact-band-desc');
     const recalledList = document.getElementById('facts-recalled-list');
     const missedList = document.getElementById('facts-missed-list');
+    const recalledCountPill = document.getElementById('recalled-count-pill');
+    const missedCountPill = document.getElementById('missed-count-pill');
+    const metricCompleteness = document.getElementById('metric-completeness');
+    const metricSemantic = document.getElementById('metric-semantic');
+    const metricSequence = document.getElementById('metric-sequence');
+    const seqBox = document.getElementById('story-sequence-box');
+    const seqText = document.getElementById('story-sequence-text');
+    const intrusionsBox = document.getElementById('story-intrusions-box');
+    const intrusionsText = document.getElementById('story-intrusions-text');
+    const disclaimerEl = document.getElementById('story-scoring-disclaimer');
 
-    if (scoreHeading) scoreHeading.textContent = `Score: ${recalled.length} / ${STORY_FACT_RULES.length} Facts Recalled (${scorePercent}%)`;
-    if (scoreBadge) {
-      scoreBadge.textContent = scorePercent + '%';
-      scoreBadge.className = scorePercent >= 75
-        ? 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white'
-        : (scorePercent >= 50
-          ? 'text-xs font-bold px-3 py-1 rounded-full bg-amber-600 text-white'
-          : 'text-xs font-bold px-3 py-1 rounded-full bg-purple-600 text-white');
+    if (!text) {
+      if (scoreCard) scoreCard.classList.remove('hidden');
+      if (scoreHeading) scoreHeading.textContent = 'No Recall Transcript Captured';
+      if (scoreBadge) {
+        scoreBadge.textContent = '0%';
+        scoreBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-slate-500 text-white';
+      }
+      if (bandDesc) bandDesc.textContent = 'Please record your speech or type what you remember from Aarav’s story.';
+      if (recalledList) recalledList.innerHTML = '<li class="italic text-slate-400">No words detected</li>';
+      if (missedList) missedList.innerHTML = '<li class="italic text-slate-400">All 8 facts missed (empty response)</li>';
+      if (recalledCountPill) recalledCountPill.textContent = '0';
+      if (missedCountPill) missedCountPill.textContent = '8';
+      return null;
     }
 
-    if (recalledList) {
-      recalledList.innerHTML = recalled.length > 0
-        ? recalled.map(f => `<li class="flex items-center gap-1.5 font-semibold text-emerald-700"><span>✓</span><span>${f}</span></li>`).join('')
-        : '<li class="italic text-slate-400">No key facts detected</li>';
-    }
-
-    if (missedList) {
-      missedList.innerHTML = missed.length > 0
-        ? missed.map(f => `<li class="flex items-center gap-1.5 text-slate-500"><span>✗</span><span>${f}</span></li>`).join('')
-        : '<li class="italic text-emerald-600 font-semibold">All 8 key facts recalled!</li>';
-    }
-
+    // 1. Enter Loading State
+    isEvaluatingNLP = true;
     if (scoreCard) scoreCard.classList.remove('hidden');
-
-    if (window.ALVI && window.ALVI.session) {
-      window.ALVI.session.saveStory({
-        completed: true,
-        durationSeconds: timingSeconds || 20,
-        transcript: text,
-        recalled_facts: recalled,
-        missed_facts: missed,
-        score_percent: scorePercent,
-        input_mode: inputMode
-      });
+    if (scoreHeading) scoreHeading.textContent = 'Evaluating narrative with NLP engine…';
+    if (scoreBadge) {
+      scoreBadge.textContent = '⏳';
+      scoreBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-purple-500 text-white animate-pulse';
     }
+    if (bandDesc) bandDesc.textContent = 'Analyzing completeness, semantics, and chronology…';
+    if (recalledList) recalledList.innerHTML = '<li class="italic text-purple-600 animate-pulse">Running semantic matching…</li>';
+    if (missedList) missedList.innerHTML = '<li class="italic text-slate-400">Comparing with story bank…</li>';
+    if (seqBox) seqBox.classList.add('hidden');
+    if (intrusionsBox) intrusionsBox.classList.add('hidden');
 
-    return { recalled, missed, scorePercent };
+    try {
+      if (!window.ALVI_API || typeof window.ALVI_API.evaluateStoryRecall !== 'function') {
+        throw new Error('ALVI_API client is not loaded. Please verify api.js inclusion.');
+      }
+
+      const result = await window.ALVI_API.evaluateStoryRecall({
+        storyId: 'aarav_story_v1',
+        transcript: text,
+        inputMode: inputMode,
+        timingSeconds: timingSeconds || 20
+      });
+
+      // 2. Render Real Backend NLP Results
+      const recalledUnits = result.recalled_units || [];
+      const missedUnits = result.missed_units || [];
+      const totalUnits = (result.metrics && result.metrics.total_units_count) || 8;
+      const composite = Math.round(result.composite_score || 0);
+
+      if (scoreHeading) {
+        scoreHeading.textContent = `Score: ${recalledUnits.length} / ${totalUnits} Units (${composite}%) — ${result.performance_band}`;
+      }
+
+      if (bandDesc) {
+        bandDesc.textContent = result.band_description || '';
+      }
+
+      if (scoreBadge) {
+        scoreBadge.textContent = `${composite}%`;
+        scoreBadge.className = composite >= 85
+          ? 'text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white'
+          : (composite >= 65
+            ? 'text-xs font-bold px-3 py-1 rounded-full bg-teal-600 text-white'
+            : (composite >= 40
+              ? 'text-xs font-bold px-3 py-1 rounded-full bg-amber-600 text-white'
+              : 'text-xs font-bold px-3 py-1 rounded-full bg-purple-600 text-white'));
+      }
+
+      // Metrics Pills
+      if (metricCompleteness && result.metrics) {
+        metricCompleteness.textContent = `${result.metrics.completeness_score}%`;
+      }
+      if (metricSemantic && result.metrics) {
+        metricSemantic.textContent = `${result.metrics.semantic_similarity_score}%`;
+      }
+      if (metricSequence && result.metrics) {
+        metricSequence.textContent = `${result.metrics.sequence_accuracy_score}%`;
+      }
+
+      // Unit Detail Lists
+      const unitDetails = result.information_units_detail || [];
+      const matchedItems = unitDetails.filter(u => u.is_matched && !u.is_negated);
+      const omittedItems = unitDetails.filter(u => !u.is_matched || u.is_negated);
+
+      if (recalledCountPill) recalledCountPill.textContent = String(matchedItems.length);
+      if (missedCountPill) missedCountPill.textContent = String(omittedItems.length);
+
+      if (recalledList) {
+        recalledList.innerHTML = matchedItems.length > 0
+          ? matchedItems.map(u => {
+              const badgeBg = u.match_type === 'exact'
+                ? 'bg-emerald-100 text-emerald-800'
+                : (u.match_type === 'paraphrase' ? 'bg-indigo-100 text-indigo-800' : 'bg-amber-100 text-amber-800');
+              return `<li class="flex items-center justify-between text-xs py-0.5 border-b border-purple-100/50">
+                <span class="flex items-center gap-1.5 font-semibold text-emerald-700">
+                  <span>✓</span><span>${u.label}</span>
+                </span>
+                <span class="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded ${badgeBg}">
+                  ${u.match_type} (+${u.points_awarded})
+                </span>
+              </li>`;
+            }).join('')
+          : '<li class="italic text-slate-400">No key narrative units identified</li>';
+      }
+
+      if (missedList) {
+        missedList.innerHTML = omittedItems.length > 0
+          ? omittedItems.map(u => {
+              const statusTag = u.is_negated
+                ? '<span class="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-800">Negated</span>'
+                : '<span class="text-[9px] text-slate-400 italic">Omitted</span>';
+              return `<li class="flex items-center justify-between text-xs py-0.5 border-b border-slate-100">
+                <span class="flex items-center gap-1.5 text-slate-500">
+                  <span>${u.is_negated ? '⊘' : '✗'}</span><span>${u.label}</span>
+                </span>
+                ${statusTag}
+              </li>`;
+            }).join('')
+          : '<li class="italic text-emerald-600 font-semibold">All units successfully recalled!</li>';
+      }
+
+      // Temporal Sequence Flow
+      if (seqBox && seqText) {
+        if (result.observed_sequence && result.observed_sequence.length > 1) {
+          const invText = result.metrics.sequence_inversions === 0
+            ? '✓ Preserved Chronology'
+            : `(${result.metrics.sequence_inversions} temporal inversion${result.metrics.sequence_inversions > 1 ? 's' : ''})`;
+          seqText.textContent = `${result.observed_sequence.join(' ➔ ')} · ${invText}`;
+          seqBox.classList.remove('hidden');
+        } else {
+          seqBox.classList.add('hidden');
+        }
+      }
+
+      // Narrative Intrusions Box
+      if (intrusionsBox && intrusionsText) {
+        if (result.intrusions_detected && result.intrusions_detected.length > 0) {
+          intrusionsText.textContent = result.intrusions_detected.map(i => `"${i.concept}"`).join(', ');
+          intrusionsBox.classList.remove('hidden');
+        } else {
+          intrusionsBox.classList.add('hidden');
+        }
+      }
+
+      // Disclaimer
+      if (disclaimerEl) {
+        disclaimerEl.textContent = result.disclaimer || '';
+      }
+
+      // Save to Session
+      if (window.ALVI && window.ALVI.session) {
+        window.ALVI.session.saveStory({
+          completed: true,
+          durationSeconds: timingSeconds || 20,
+          transcript: text,
+          recalled_facts: recalledUnits,
+          missed_facts: missedUnits,
+          score_percent: composite,
+          composite_score: result.composite_score,
+          performance_band: result.performance_band,
+          metrics: result.metrics,
+          information_units_detail: result.information_units_detail,
+          observed_sequence: result.observed_sequence,
+          intrusions_detected: result.intrusions_detected,
+          input_mode: inputMode,
+          disclaimer: result.disclaimer
+        });
+
+        if (typeof window.ALVI.session.recordPracticeCompletion === 'function') {
+          window.ALVI.session.recordPracticeCompletion({
+            exerciseId: 'ex_narrative_retell_foundations',
+            exerciseTitle: 'Narrative Recall & Anchor Retrieval',
+            domain: 'memory',
+            score: composite,
+            durationSeconds: timingSeconds || 20,
+            isDemo: false
+          });
+        }
+      }
+
+      return result;
+
+    } catch (err) {
+      console.error('[ALVI Story NLP] Evaluation error:', err);
+      if (scoreHeading) scoreHeading.textContent = 'Story Evaluation Notice';
+      if (scoreBadge) {
+        scoreBadge.textContent = '!';
+        scoreBadge.className = 'text-xs font-bold px-3 py-1 rounded-full bg-rose-600 text-white';
+      }
+      if (bandDesc) {
+        bandDesc.textContent = `Backend NLP error: ${err.message}. Please verify the FastAPI backend is running on http://127.0.0.1:8765.`;
+      }
+      if (recalledList) {
+        recalledList.innerHTML = `<li class="text-rose-600 text-xs">Could not reach NLP evaluation endpoint at port 8765.</li>`;
+      }
+      return null;
+    } finally {
+      isEvaluatingNLP = false;
+    }
   }
 
   // ── Playback element (injected into the dark recording panel) ─────────────
@@ -349,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const typedInput = document.getElementById('typed-retell-input');
           const textToScore = liveTranscript || (typedInput ? typedInput.value : '');
-          scoreStoryRecall(textToScore, storyElapsed, 'voice');
+          await scoreStoryRecall(textToScore, storyElapsed, 'voice');
         }
       };
 
@@ -447,13 +600,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (scoreTypedBtn && typedInput) {
-    scoreTypedBtn.addEventListener('click', () => {
+    scoreTypedBtn.addEventListener('click', async () => {
       const text = typedInput.value;
       if (!text || text.trim().length === 0) {
         alert('Please type what you remember from the story before evaluating.');
         return;
       }
-      scoreStoryRecall(text, 25, 'typed');
+      await scoreStoryRecall(text, 25, 'typed');
     });
   }
 

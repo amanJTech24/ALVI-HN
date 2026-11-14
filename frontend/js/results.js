@@ -40,6 +40,77 @@ document.addEventListener('DOMContentLoaded', async () => {
     return (ms / 1000).toFixed(1) + 's';
   }
 
+  // ── Session History Helpers (Mode B Personal Longitudinal Tracking) ────────
+  function getSessionHistory() {
+    try {
+      const stored = localStorage.getItem('alvi_session_history');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (_) {}
+    return [];
+  }
+
+  function appendSessionHistory(currentSession) {
+    if (!currentSession || !currentSession.sessionId) return;
+    const history = getSessionHistory();
+    const idx = history.findIndex(h => h.sessionId === currentSession.sessionId);
+    if (idx >= 0) {
+      history[idx] = currentSession;
+    } else {
+      history.push(currentSession);
+    }
+    try {
+      localStorage.setItem('alvi_session_history', JSON.stringify(history));
+    } catch (_) {}
+  }
+
+  // ── Backend Reference Statistics Cache (Mode C Empirical Distribution) ─────
+  let cachedBackendRefStats = null;
+  async function getAcousticReferenceStats() {
+    if (cachedBackendRefStats) return cachedBackendRefStats;
+    const api = window.ALVI_API || (window.ALVI && window.ALVI.api);
+    if (api && typeof api.fetchReferenceStats === 'function') {
+      try {
+        const resp = await api.fetchReferenceStats();
+        if (resp && resp.acoustic_reference_metrics) {
+          const map = {};
+          for (const [k, v] of Object.entries(resp.acoustic_reference_metrics)) {
+            map[k] = v.distribution;
+          }
+          if (resp.cognitive_task_standards) {
+            if (resp.cognitive_task_standards['story.score_percent']) {
+              const st = resp.cognitive_task_standards['story.score_percent'];
+              map['story.score_percent'] = {
+                median: st.expected_median,
+                q1: st.expected_q1,
+                q3: st.expected_q3,
+                min: st.min,
+                max: st.max
+              };
+            }
+            if (resp.cognitive_task_standards['mindplay.ch3_reaction_ms']) {
+              const mp = resp.cognitive_task_standards['mindplay.ch3_reaction_ms'];
+              map['mindplay.ch3_reaction_ms'] = {
+                median: mp.expected_median,
+                q1: mp.expected_q1,
+                q3: mp.expected_q3,
+                min: mp.min,
+                max: mp.max
+              };
+            }
+          }
+          cachedBackendRefStats = map;
+          return map;
+        }
+      } catch (err) {
+        console.warn('[ALVI Results] Using local dataset reference statistics:', err);
+      }
+    }
+    return dataset ? dataset.getReferenceStats() : {};
+  }
+
   // ── State ───────────────────────────────────────────────────────────────────
   let activeCaseId = 'LIVE_JUDGE'; // 'LIVE_JUDGE' | 'HC01'..'HC10' | 'AD01' | 'AD02'
   let benchmarkChart = null;
@@ -100,7 +171,41 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function getActiveCaseData() {
     if (activeCaseId === 'LIVE_JUDGE') {
       const s = sessionManager ? sessionManager.get() : {};
-      const voiceFeatures = s.voice && s.voice.features;
+      const voiceObj = s.voice || {};
+      const voiceFeatures = voiceObj.features || {};
+      const summary = voiceObj.audio_summary || {};
+      const pred = voiceObj.research_prediction || (voiceObj.backend_result && voiceObj.backend_result.research_prediction) || null;
+
+      const dur = voiceObj.durationSeconds || summary.duration_seconds || (voiceFeatures ? voiceFeatures.duration_seconds : 0) || 0;
+      const rms = summary.rms_energy_mean != null ? summary.rms_energy_mean : (voiceFeatures.rms_mean != null ? voiceFeatures.rms_mean : voiceFeatures.rms);
+      const zcr = voiceFeatures.zcr_mean != null ? voiceFeatures.zcr_mean : voiceFeatures.zcr;
+      const pauseRatio = voiceFeatures.low_energy_frame_ratio != null ? voiceFeatures.low_energy_frame_ratio : voiceFeatures.pause_ratio;
+      const pauseCount = voiceFeatures.low_energy_interval_count != null ? voiceFeatures.low_energy_interval_count : voiceFeatures.pause_count;
+      const centroid = summary.spectral_centroid_hz != null ? summary.spectral_centroid_hz : (voiceFeatures.spectral_centroid_mean != null ? voiceFeatures.spectral_centroid_mean : voiceFeatures.spectral_centroid);
+      const f0Mean = summary.voiced_f0_mean_hz != null ? summary.voiced_f0_mean_hz : voiceFeatures.f0_mean;
+      const f0VoicedRatio = summary.voiced_ratio != null ? summary.voiced_ratio : voiceFeatures.f0_voiced_ratio;
+
+      // Invoke FastAPI Case Comparison Engine (Modes A, B, C)
+      let backendComparison = null;
+      const api = window.ALVI_API || (window.ALVI && window.ALVI.api);
+      const history = getSessionHistory();
+      const pastSessions = history.filter(h => h.sessionId && h.sessionId !== s.sessionId);
+
+      if (api && typeof api.compareSessionCases === 'function') {
+        try {
+          backendComparison = await api.compareSessionCases({
+            currentSession: s,
+            historySessions: pastSessions
+          });
+        } catch (apiErr) {
+          console.warn('[ALVI Results] Backend case comparison unavailable, using local synthesis:', apiErr);
+        }
+      }
+
+      // Record completed session to local history
+      if (voiceObj.completed || (s.story && s.story.completed) || (s.mindplay && s.mindplay.completed)) {
+        appendSessionHistory(s);
+      }
 
       return {
         id: 'LIVE_JUDGE',
@@ -112,23 +217,29 @@ document.addEventListener('DOMContentLoaded', async () => {
         task_version: 'Aarav Story v1.0 / Park Scene v1.0 / MindPlay Tri-Challenge v1.0',
         data_authenticity: 'Empirical Participant Response',
         available_assessments: [
-          s.voice && s.voice.completed ? 'voice' : null,
+          voiceObj.completed ? 'voice' : null,
           s.story && s.story.completed ? 'story' : null,
           s.mindplay && s.mindplay.completed ? 'mindplay' : null
         ].filter(Boolean),
-        has_audio: !!(s.voice && s.voice.completed),
+        has_audio: !!(voiceObj.completed),
         audio_authorized_for_replay: true,
+        comparison: backendComparison,
         voice: {
-          completed: !!(s.voice && s.voice.completed),
-          duration: s.voice ? s.voice.durationSeconds : 0,
-          rms: voiceFeatures ? voiceFeatures.rms : null,
-          zcr: voiceFeatures ? voiceFeatures.zcr : null,
-          pause_ratio: voiceFeatures ? voiceFeatures.pause_ratio : null,
-          pause_count: voiceFeatures ? voiceFeatures.pause_count : null,
+          completed: !!(voiceObj.completed),
+          duration: dur,
+          rms: rms != null ? rms : null,
+          zcr: zcr != null ? zcr : null,
+          pause_ratio: pauseRatio != null ? pauseRatio : null,
+          pause_count: pauseCount != null ? pauseCount : null,
           pause_seconds: voiceFeatures ? voiceFeatures.pause_seconds : null,
-          spectral_centroid: voiceFeatures ? voiceFeatures.spectral_centroid : null,
-          isValid: s.voice ? s.voice.isValid : true,
-          rejectionReason: s.voice ? s.voice.rejectionReason : null
+          spectral_centroid: centroid != null ? centroid : null,
+          f0_mean: f0Mean != null ? f0Mean : null,
+          f0_voiced_ratio: f0VoicedRatio != null ? f0VoicedRatio : null,
+          research_prediction: pred,
+          backend_result: voiceObj.backend_result || null,
+          audio_summary: summary,
+          isValid: voiceObj.isValid !== false,
+          rejectionReason: voiceObj.rejectionReason || null
         },
         story: {
           completed: !!(s.story && s.story.completed),
@@ -165,7 +276,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const caseData = await getActiveCaseData();
     if (!caseData) return;
 
-    const refStats = dataset ? dataset.getReferenceStats() : {};
+    const refStats = await getAcousticReferenceStats();
 
     // Keep dropdowns in sync with activeCaseId
     if (activeCaseId.startsWith('AD') && alzheimersCaseSelect) {
@@ -249,11 +360,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (voiceDetail) voiceDetail.textContent = voice.rejectionReason || 'Recording silent or too short.';
         if (voiceDuration) voiceDuration.textContent = formatDuration(voice.duration);
       } else {
-        if (voiceStatus) voiceStatus.textContent = 'Acoustic Analyzed';
+        if (voiceStatus) {
+          if (voice.research_prediction) {
+            voiceStatus.textContent = `Research Group: ${voice.research_prediction.predicted_label}`;
+          } else {
+            voiceStatus.textContent = 'Acoustic Analyzed (79 Features)';
+          }
+        }
         if (voiceDetail) {
-          const pausePct = voice.pause_ratio != null ? (voice.pause_ratio * 100).toFixed(0) + '% pauses' : 'Valid speech sample';
-          const zcrText = voice.zcr != null ? ` · ZCR: ${voice.zcr}` : '';
-          voiceDetail.textContent = `${pausePct}${zcrText}`;
+          const detailParts = [];
+          if (voice.f0_mean != null) detailParts.push(`Pitch: ${Math.round(voice.f0_mean)} Hz`);
+          if (voice.rms != null) detailParts.push(`RMS: ${voice.rms.toFixed(4)}`);
+          if (voice.zcr != null) detailParts.push(`ZCR: ${voice.zcr.toFixed(4)}`);
+          if (voice.pause_ratio != null) detailParts.push(`Low-Energy: ${(voice.pause_ratio * 100).toFixed(0)}% (proxy)`);
+          voiceDetail.textContent = detailParts.length > 0 ? detailParts.join(' · ') : 'Valid speech sample recorded';
         }
         if (voiceDuration) voiceDuration.textContent = formatDuration(voice.duration);
       }
@@ -318,23 +438,165 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }
 
-    // 8. Populate Benchmark Metrics Comparison Table
+    // 8. Personal Longitudinal History Comparison (Mode B)
+    renderPersonalHistory(caseData);
+
+    // 9. Populate Benchmark Metrics Comparison Table (Mode C)
     renderBenchmarkTable(caseData, refStats);
 
-    // 9. Update Chart.js Visualization
+    // 10. Update Chart.js Visualization (Mode C)
     renderBenchmarkChart(caseData, refStats);
 
-    // 10. Alzheimer's Disease Risk & Likelihood Assessment
+    // 11. Acoustic & Cognitive Pattern Analysis (Non-Diagnostic Mode A)
     renderAlzheimersRiskAssessment(caseData, refStats);
   }
 
-  // ── Render Tabular Metrics Comparison ──────────────────────────────────────
+  // ── Render Personal Longitudinal History (Mode B) ──────────────────────────
+  function renderPersonalHistory(caseData) {
+    const section = document.getElementById('personal-history-section');
+    const badge = document.getElementById('history-badge');
+    const emptyState = document.getElementById('history-empty-state');
+    const emptyText = document.getElementById('history-empty-text');
+    const dataContainer = document.getElementById('history-data-container');
+    const grid = document.getElementById('history-trajectories-grid');
+    const summaryNote = document.getElementById('history-summary-note');
+
+    if (!section) return;
+
+    if (caseData.id !== 'LIVE_JUDGE') {
+      if (badge) badge.textContent = 'Demo Profile';
+      if (emptyState) emptyState.classList.remove('hidden');
+      if (emptyText) emptyText.textContent = 'Longitudinal tracking is enabled for Live Assessment sessions over multiple check-ins. Reference walkthrough cases represent single-session snapshots.';
+      if (dataContainer) dataContainer.classList.add('hidden');
+      return;
+    }
+
+    const comparison = caseData.comparison;
+    const modeB = comparison ? comparison.mode_b_personal_history : null;
+
+    if (!modeB || !modeB.has_sufficient_history) {
+      if (badge) {
+        const total = modeB ? modeB.total_sessions_recorded : 1;
+        badge.textContent = `${total} Session Recorded (Initial Baseline)`;
+      }
+      if (emptyState) emptyState.classList.remove('hidden');
+      if (emptyText) {
+        emptyText.textContent = modeB ? modeB.message : 'Personal longitudinal comparison requires at least 2 completed sessions. Complete additional check-ins to monitor your cognitive and speech stability over time.';
+      }
+      if (dataContainer) dataContainer.classList.add('hidden');
+      return;
+    }
+
+    // Has >= 2 sessions: Render Trajectory Cards
+    if (emptyState) emptyState.classList.add('hidden');
+    if (dataContainer) dataContainer.classList.remove('hidden');
+    if (badge) badge.textContent = `${modeB.total_sessions_recorded} Sessions Tracked`;
+
+    const trajectories = modeB.metric_trajectories || {};
+    const cards = [
+      {
+        key: 'story_recall_accuracy',
+        title: 'Story Recall Retention',
+        icon: '📖',
+        data: trajectories.story_recall_accuracy,
+        unit: '%',
+        formatter: (v) => `${v}%`
+      },
+      {
+        key: 'visual_search_latency',
+        title: 'Visual Search Latency',
+        icon: '⚡',
+        data: trajectories.visual_search_latency,
+        unit: 'ms',
+        formatter: (v) => `${Math.round(v)} ms`
+      },
+      {
+        key: 'voice_pitch_f0',
+        title: 'Pitch (Voiced F0 Mean)',
+        icon: '🎙️',
+        data: trajectories.voice_pitch_f0,
+        unit: 'Hz',
+        formatter: (v) => `${Math.round(v)} Hz`
+      },
+      {
+        key: 'voice_pause_ratio',
+        title: 'Acoustic Pause Ratio',
+        icon: '⏸️',
+        data: trajectories.voice_pause_ratio,
+        unit: '',
+        formatter: (v) => `${(v * 100).toFixed(1)}%`
+      }
+    ];
+
+    if (grid) {
+      grid.innerHTML = cards.map(c => {
+        if (!c.data) {
+          return `
+            <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-1">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">${c.icon} ${c.title}</span>
+              <span class="text-sm font-extrabold text-slate-400">No Prior Data</span>
+              <span class="text-[10px] text-slate-400 block">Baseline Pending</span>
+            </div>
+          `;
+        }
+
+        const delta = c.data.absolute_delta;
+        const pct = c.data.percent_change;
+        const isPositive = delta > 0;
+        const isZero = delta === 0;
+
+        let deltaBadgeClass = 'bg-slate-100 text-slate-700';
+        if (!isZero) {
+          if (c.data.trajectory === 'stable') {
+            deltaBadgeClass = 'bg-indigo-50 text-indigo-700';
+          } else if (c.key === 'visual_search_latency' || c.key === 'voice_pause_ratio') {
+            deltaBadgeClass = delta < 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700';
+          } else {
+            deltaBadgeClass = delta > 0 ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700';
+          }
+        }
+
+        const sign = isPositive ? '+' : '';
+
+        return `
+          <div class="bg-white p-3.5 rounded-2xl border border-slate-200 shadow-sm space-y-1.5">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">${c.icon} ${c.title}</span>
+            <div class="flex items-baseline justify-between">
+              <span class="text-base font-black text-slate-800">${c.formatter(c.data.current_value)}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${deltaBadgeClass}">
+                ${sign}${delta}${c.unit} (${sign}${pct}%)
+              </span>
+            </div>
+            <div class="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-slate-100">
+              <span>Prior: ${c.formatter(c.data.prior_value)}</span>
+              <span class="capitalize font-semibold text-slate-600">${c.data.trajectory}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    if (summaryNote && modeB.summary_delta) {
+      summaryNote.textContent = modeB.summary_delta.interpretation || '';
+    }
+  }
+
+  // ── Render Tabular Metrics Comparison (Mode C) ──────────────────────────────
   function renderBenchmarkTable(caseData, refStats) {
     if (!tbody) return;
 
     const rows = [
       {
-        signal: '🎙️ Speech Pause Ratio',
+        signal: '🎙️ Estimated Pitch (Voiced F0 Mean)',
+        unit: 'Hz',
+        current: caseData.voice && caseData.voice.f0_mean != null ? `${Math.round(caseData.voice.f0_mean)} Hz` : null,
+        numVal: caseData.voice && caseData.voice.f0_mean != null ? caseData.voice.f0_mean : null,
+        refKey: 'voice.f0_mean',
+        isHigherAtypical: false,
+        formatter: (v) => Math.round(v) + ' Hz'
+      },
+      {
+        signal: '🎙️ Low-Energy Pause Ratio (Acoustic Proxy)',
         unit: '%',
         current: caseData.voice && caseData.voice.pause_ratio != null ? (caseData.voice.pause_ratio * 100).toFixed(1) + '%' : null,
         numVal: caseData.voice && caseData.voice.pause_ratio != null ? caseData.voice.pause_ratio : null,
@@ -363,7 +625,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       {
         signal: '🎙️ Spectral Centroid',
         unit: 'Hz',
-        current: caseData.voice && caseData.voice.spectral_centroid != null ? caseData.voice.spectral_centroid + ' Hz' : null,
+        current: caseData.voice && caseData.voice.spectral_centroid != null ? Math.round(caseData.voice.spectral_centroid) + ' Hz' : null,
         numVal: caseData.voice && caseData.voice.spectral_centroid != null ? caseData.voice.spectral_centroid : null,
         refKey: 'voice.spectral_centroid',
         isHigherAtypical: false,
@@ -578,6 +840,199 @@ document.addEventListener('DOMContentLoaded', async () => {
     const voice = caseData.voice || {};
     const story = caseData.story || {};
     const mp = caseData.mindplay;
+
+    if (caseData.id === 'LIVE_JUDGE') {
+      // ───────────────────────────────────────────────────────────────────────
+      // NON-DIAGNOSTIC RESEARCH CLASSIFICATION & EMPIRICAL ACOUSTIC REPORT
+      // Clinical Alzheimer's disease diagnosis / risk tiers are disabled for Live Voice Check-in.
+      // ───────────────────────────────────────────────────────────────────────
+      const pred = voice.research_prediction;
+
+      const sectionHeaderTitle = document.querySelector('#ad-risk-assessment-section h3');
+      const sectionHeaderSub = document.querySelector('#ad-risk-assessment-section p');
+      const sectionTag = document.querySelector('#ad-risk-assessment-section span');
+      if (sectionHeaderTitle) {
+        sectionHeaderTitle.textContent = "Acoustic Speech & Research Pattern Analysis";
+      }
+      if (sectionHeaderSub) {
+        sectionHeaderSub.textContent = "Empirical acoustic measurements (79 features) and exploratory research classification. Not clinically validated for diagnostic screening.";
+      }
+      if (sectionTag) {
+        sectionTag.textContent = "Exploratory ML Research";
+        sectionTag.className = "text-[10px] font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100";
+      }
+
+      // Hero Metric: Raw Model Score / Research Classification (NOT a medical probability)
+      const probLabel = document.querySelector('#ad-risk-assessment-section .text-xs.font-bold.uppercase.tracking-wider');
+      const probUnit = document.querySelector('#ad-risk-assessment-section .text-sm.font-bold.text-slate-500');
+      if (probLabel) probLabel.textContent = "Exploratory Model Output";
+      if (probUnit) probUnit.textContent = "Raw Ensemble Score";
+
+      if (pred && pred.raw_model_score != null) {
+        probPercent.textContent = pred.raw_model_score.toFixed(3);
+        riskTierBadge.textContent = `Research Group: ${pred.predicted_label}`;
+        riskTierBadge.className = pred.predicted_label === 'dementia'
+          ? "px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-purple-100 text-purple-800 border border-purple-200 shadow-sm"
+          : "px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-indigo-100 text-indigo-800 border border-indigo-200 shadow-sm";
+
+        probCategory.textContent = `Random Forest Classifier (${pred.model_version || 'v1.0.0-experimental'}) — Uncalibrated Score`;
+        probCategory.className = "text-xs font-bold text-indigo-700";
+
+        if (indicatorBar) {
+          const clamped = Math.min(100, Math.max(0, pred.raw_model_score * 100));
+          indicatorBar.style.left = `calc(${clamped}% - 6px)`;
+        }
+      } else if (voice.completed) {
+        probPercent.textContent = "—";
+        riskTierBadge.textContent = "Acoustic Baseline Captured";
+        riskTierBadge.className = "px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-700 border border-slate-200 shadow-sm";
+        probCategory.textContent = "Acoustic Features Extracted (Non-Diagnostic)";
+        probCategory.className = "text-xs font-bold text-slate-600";
+        if (indicatorBar) indicatorBar.style.left = "0%";
+      } else {
+        probPercent.textContent = "—";
+        riskTierBadge.textContent = "Voice Uncollected";
+        riskTierBadge.className = "px-3.5 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider bg-slate-100 text-slate-400 border border-slate-200 shadow-sm";
+        probCategory.textContent = "No Voice Audio Recorded";
+        probCategory.className = "text-xs font-bold text-slate-400";
+        if (indicatorBar) indicatorBar.style.left = "0%";
+      }
+
+      // Acoustic Factor Box
+      if (acousticBadge) {
+        acousticBadge.textContent = voice.completed ? "79 Features Extracted" : "Not Recorded";
+        acousticBadge.className = "text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200";
+      }
+      if (acousticDetail) {
+        if (voice.completed) {
+          const f0Text = voice.f0_mean != null ? ` · Pitch F0: ${Math.round(voice.f0_mean)} Hz` : '';
+          const rmsText = voice.rms != null ? ` · RMS: ${voice.rms.toFixed(4)}` : '';
+          const zcrText = voice.zcr != null ? ` · ZCR: ${voice.zcr.toFixed(4)}` : '';
+          const pauseText = voice.pause_count != null ? ` · Low-Energy Intervals: ${voice.pause_count} (proxy)` : '';
+          acousticDetail.textContent = `Duration: ${voice.duration ? voice.duration.toFixed(1) : 0}s${f0Text}${rmsText}${zcrText}${pauseText}`;
+        } else {
+          acousticDetail.textContent = "No voice check-in audio recorded.";
+        }
+      }
+
+      // Memory & Executive Factors
+      if (memoryBadge) {
+        memoryBadge.textContent = story.completed ? `${story.score_percent}% Retained` : "Task Skipped";
+      }
+      if (memoryDetail) {
+        memoryDetail.textContent = story.completed
+          ? `Target Facts: ${(story.recalled_facts || []).length} / 8 anchors recalled.`
+          : "Story recall was not completed in this session.";
+      }
+      if (executiveBadge) {
+        executiveBadge.textContent = mp ? "Tasks Evaluated" : "Task Skipped";
+      }
+      if (executiveDetail) {
+        executiveDetail.textContent = mp
+          ? `Search Latency: ${mp.ch3_reactionMs ? Math.round(mp.ch3_reactionMs) + 'ms' : '—'} · Dual Binding: ${mp.ch1_score ?? 0}/2`
+          : "MindPlay was not completed in this session.";
+      }
+
+      // Populate 12-Biomarker Matrix truthfully without fake fallbacks
+      function setParamUI(valId, statusId, valueText, statusText, isImpaired, isBorderline) {
+        const valEl = document.getElementById(valId);
+        const statusEl = document.getElementById(statusId);
+        if (valEl) valEl.textContent = valueText;
+        if (statusEl) {
+          statusEl.textContent = statusText;
+          if (isImpaired) {
+            statusEl.className = 'text-[10px] block font-semibold text-rose-600';
+          } else if (isBorderline) {
+            statusEl.className = 'text-[10px] block font-semibold text-amber-600';
+          } else {
+            statusEl.className = 'text-[10px] block font-semibold text-emerald-600';
+          }
+        }
+      }
+
+      setParamUI('param-pause-ratio', 'param-pause-ratio-status',
+        voice.pause_ratio != null ? `${(voice.pause_ratio * 100).toFixed(1)}%` : 'Uncollected',
+        voice.pause_ratio != null ? 'Acoustic Proxy (Low-Energy)' : 'Not Recorded',
+        false, false
+      );
+      setParamUI('param-pause-freq', 'param-pause-freq-status',
+        voice.pause_count != null ? `${voice.pause_count} intervals` : 'Uncollected',
+        voice.pause_count != null ? 'Acoustic Proxy (Low-Energy)' : 'Not Recorded',
+        false, false
+      );
+      setParamUI('param-rms', 'param-rms-status',
+        voice.rms != null ? voice.rms.toFixed(4) : 'Uncollected',
+        voice.rms != null ? 'Empirical RMS Energy' : 'Not Recorded',
+        false, false
+      );
+      setParamUI('param-spectral', 'param-spectral-status',
+        voice.spectral_centroid != null ? `${Math.round(voice.spectral_centroid)} Hz` : 'Uncollected',
+        voice.spectral_centroid != null ? 'Empirical Centroid' : 'Not Recorded',
+        false, false
+      );
+      setParamUI('param-fact-retention', 'param-fact-retention-status',
+        story.completed ? `${(story.recalled_facts || []).length} / 8 Facts` : 'Uncollected',
+        story.completed ? `${story.score_percent}% Retained` : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-chronology', 'param-chronology-status',
+        story.completed ? 'Recorded' : 'Uncollected',
+        story.completed ? 'Narrative Sequence' : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-intrusion', 'param-intrusion-status',
+        story.completed ? 'Analyzed' : 'Uncollected',
+        story.completed ? 'Observed Transcript' : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-dual-binding', 'param-dual-binding-status',
+        mp ? `${mp.ch1_score ?? 0} / 2 Targets` : 'Uncollected',
+        mp ? (mp.ch1_correct ? 'Correct' : 'Incorrect') : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-transposition', 'param-transposition-status',
+        mp ? (mp.ch2_correct ? '0 Inversions' : 'Order Transposed') : 'Uncollected',
+        mp ? (mp.ch2_correct ? 'Correct' : 'Transposed') : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-latency', 'param-latency-status',
+        mp && mp.ch3_reactionMs ? `${Math.round(mp.ch3_reactionMs)} ms` : 'Uncollected',
+        mp && mp.ch3_reactionMs ? 'Observed Latency' : 'Task Skipped',
+        false, false
+      );
+      setParamUI('param-concordance', 'param-concordance-status',
+        'Research Mode',
+        'Non-Diagnostic Assessment',
+        false, false
+      );
+      setParamUI('param-margin', 'param-margin-status',
+        '± N/A',
+        'Uncalibrated Model',
+        false, false
+      );
+
+      if (concordanceStatus) {
+        concordanceStatus.textContent = 'Assessment Mode: Empirical Feature Report';
+        concordanceStatus.className = 'font-bold text-slate-700';
+      }
+      if (rigorBadge) {
+        rigorBadge.textContent = 'Non-Diagnostic Exploratory Research Mode';
+        rigorBadge.className = 'text-[10px] font-extrabold px-2 py-0.5 rounded-full border bg-indigo-50 text-indigo-700 border-indigo-200';
+      }
+
+      // Guidance & Disclaimers
+      if (guidanceTitle) {
+        guidanceTitle.textContent = 'Research Notice: Non-Diagnostic Speech Screening';
+      }
+      if (guidanceText) {
+        const disclaimer = (pred && pred.disclaimer)
+          ? pred.disclaimer
+          : "ALVI is an exploratory cognitive pattern screening prototype. This output is NOT a medical diagnosis, does NOT assess clinical Alzheimer's risk, and has NOT been clinically validated.";
+        guidanceText.textContent = `${disclaimer} The exploratory classifier was trained on public broadcast interviews from the DementiaNet corpus, NOT clinical patient assessments of this scene-description check-in task. The raw model score represents a tree ensemble vote fraction, NOT a diagnostic probability or percentage risk.`;
+      }
+
+      return; // Completed LIVE_JUDGE cleanly
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // 12-BIOMARKER EXTRACTION & MULTI-PARAMETRIC EVALUATION
@@ -939,6 +1394,45 @@ document.addEventListener('DOMContentLoaded', async () => {
     uploadAudioInput.addEventListener('change', async (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
+
+      const api = window.ALVI_API || (window.ALVI && window.ALVI.api);
+      if (api && typeof api.uploadVoiceRecording === 'function') {
+        try {
+          if (audioPrivacyMsg) audioPrivacyMsg.textContent = `Analyzing "${file.name}" with FastAPI ML Engine (79 acoustic features)...`;
+          const mlResult = await api.uploadVoiceRecording(file);
+
+          if (activeAudioBlobUrl) URL.revokeObjectURL(activeAudioBlobUrl);
+          activeAudioBlobUrl = URL.createObjectURL(file);
+          if (caseAudioPlayer) {
+            caseAudioPlayer.src = activeAudioBlobUrl;
+            caseAudioPlayer.classList.remove('hidden');
+          }
+          if (audioPrivacyMsg) {
+            const pred = mlResult.research_prediction;
+            audioPrivacyMsg.textContent = `Imported: ${file.name} — ML Research Group: "${pred.predicted_label}" (score: ${pred.raw_model_score.toFixed(3)})`;
+          }
+
+          if (activeCaseId === 'LIVE_JUDGE') {
+            if (storage) await storage.saveAudio('voice_judge', file, { duration: mlResult.audio_summary.duration_seconds });
+            if (sessionManager) {
+              sessionManager.saveVoice({
+                completed: true,
+                durationSeconds: mlResult.audio_summary.duration_seconds,
+                isValid: true,
+                backend_result: mlResult,
+                audio_summary: mlResult.audio_summary,
+                features: mlResult.acoustic_features,
+                research_prediction: mlResult.research_prediction
+              });
+            }
+            await renderActiveCase();
+          }
+          return;
+        } catch (mlErr) {
+          console.warn('Backend ML upload failed during import, falling back to local analysis:', mlErr);
+          if (audioPrivacyMsg) audioPrivacyMsg.textContent = `Backend note: ${mlErr.message}. Attempting local decode…`;
+        }
+      }
 
       if (window.ALVI && window.ALVI.audioAnalysis) {
         try {

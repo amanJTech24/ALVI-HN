@@ -1,0 +1,141 @@
+{
+  "version": "1.0.0",
+  "catalog_name": "ALVI Cognitive Learning Path & Practice Catalog",
+  "disclaimer": "These practice activities are experimental cognitive stimulation exercises designed to practice memory, sequencing, attention, and verbal descriptive skills. They are NOT medical treatment, cognitive rehabilitation therapy, or clinically validated to prevent or reverse dementia.",
+  "exercises": [
+    {
+      "exercise_id": "ex_narrative_retell_foundations",
+      "display_name": "Narrative Recall & Anchor Retrieval",
+      "skill_practiced": "Episodic Story Memory & Information Unit Recall",
+      "category": "memory",
+      "difficulty": "Standard",
+      "estimated_duration": "2–3 minutes",
+      "estimated_duration_seconds": 150,
+      "route": "story.html",
+      "target_activity": "story",
+      "instructions": "Listen to the short narrative about Aarav's morning walk, then retell the story verbally or in text, recalling as many core anchor details (people, locations, actions, objects) as possible.",
+      "supported_signals": [
+        "story.score_percent",
+        "story.recalled_facts",
+        "story.missed_facts"
+      ],
+      "recommendation_conditions": {
+        "min_score_threshold": 0.0,
+        "max_score_threshold": 75.0,
+        "min_missed_facts": 2
+      },
+      "explanation_template": "Story Recall achieved {score}% completeness ({recalled_count} of {total_count} core anchors). Practicing narrative retell strengthens episodic retrieval and detail retention.",
+      "methodology_version": "v1.0-rule-based"
+    },
+    {
+      "exercise_id": "ex_temporal_chronology_builder",
+      "display_name": "Story Chronology & Temporal Sequencing",
+      "skill_practiced": "Executive Sequencing & Chronological Working Memory",
+      "category": "executive_sequencing",
+      "difficulty": "Standard",
+      "estimated_duration": "1–2 minutes",
+      "estimated_duration_seconds": 90,
+      "route": "mindplay.html",
+      "target_activity": "mindplay",
+      "instructions": "Arrange the narrative milestone cards into their exact chronological order from first event to last event to rebuild sequence coherence.",
+      "supported_signals": [
+        "mindplay.ch2_correct",
+        "mindplay.ch2_inversions"
+      ],
+      "recommendation_conditions": {
+        "ch2_must_be_incorrect": true
+      },
+      "explanation_template": "MindPlay detected event sequence transpositions. Chronological reordering exercises reinforce temporal working memory and executive planning.",
+      "methodology_version": "v1.0-rule-based"
+    },
+    {
+      "exercise_id": "ex_dual_feature_binding",
+      "display_name": "Dual-Feature Memory Association",
+      "skill_practiced": "Visual-Verbal Feature Binding & Delayed Recognition",
+      "category": "memory",
+      "difficulty": "Standard",
+      "estimated_duration": "1–2 minutes",
+      "estimated_duration_seconds": 90,
+      "route": "mindplay.html",
+      "target_activity": "mindplay",
+      "instructions": "Identify the target items mentioned in the narrative from a grid of cards while ignoring plausible semantic lure distractors.",
+      "supported_signals": [
+        "mindplay.ch1_score",
+        "mindplay.ch1_correct"
+      ],
+      "recommendation_conditions": {
+        "max_ch1_score": 1
+      },
+      "explanation_template": "Dual feature binding score was {ch1_score}/2 targets. Practicing paired object identification strengthens associative working memory against distractor interference.",
+      "methodology_version": "v1.0-rule-based"
+    },
+    {
+      "exercise_id": "ex_visual_search_agility",
+      "display_name": "Target Discrimination & Visual Search",
+      "skill_practiced": "Selective Visual Attention & Processing Latency",
+      "category": "attention_speed",
+      "difficulty": "Standard",
+      "estimated_duration": "1 minute",
+      "estimated_duration_seconds": 60,
+      "route": "mindplay.html",
+      "target_activity": "mindplay",
+      "instructions": "Locate and select the target contextual item under live reaction timing while suppressing distractor alternatives.",
+      "supported_signals": [
+        "mindplay.ch3_reaction_ms",
+        "mindplay.ch3_correct"
+      ],
+      "recommendation_conditions": {
+        "min_latency_ms": 3500.0,
+        "ch3_must_be_incorrect": false
+      },
+      "explanation_template": "Visual search reaction latency was {latency_ms} ms. Rapid target discrimination drills encourage focused visual scanning and prompt motor selection.",
+      "methodology_version": "v1.0-rule-based"
+    },
+    {
+      "exercise_id": "ex_spontaneous_speech_description",
+      "display_name": "Descriptive Scene Narration & Fluency",
+      "skill_practiced": "Spontaneous Speech Pacing & Picture Description",
+      "category": "speech_language",
+      "difficulty": "Standard",
+      "estimated_duration": "2–3 minutes",
+      "estimated_duration_seconds": 150,
+      "route": "voice.html",
+      "target_activity": "voice",
+      "instructions": "View the park scene prompt and describe what is happening in continuous, unhurried sentences, naming people, actions, and objects naturally.",
+      "supported_signals": [
+        "voice.pause_ratio",
+        "voice.pause_count",
+        "voice.duration"
+      ],
+      "recommendation_conditions": {
+        "min_pause_ratio": 0.28,
+        "min_pause_count": 8,
+        "max_duration_seconds": 15.0
+      },
+      "explanation_template": "Speech sample exhibited elevated low-energy pause intervals ({pause_percent}% pause proxy). Relaxed picture description practice promotes continuous vocal pacing without time pressure.",
+      "methodology_version": "v1.0-rule-based"
+    },
+    {
+      "exercise_id": "ex_full_trio_review",
+      "display_name": "Comprehensive Multi-Modal Check-in",
+      "skill_practiced": "Integrated Speech, Episodic Memory & Executive Cognition",
+      "category": "comprehensive",
+      "difficulty": "Standard",
+      "estimated_duration": "3–4 minutes",
+      "estimated_duration_seconds": 210,
+      "route": "voice.html",
+      "target_activity": "voice",
+      "instructions": "Complete all three connected assessment steps (Voice Check-in, Story Recall, and MindPlay) to update your longitudinal cognitive baseline.",
+      "supported_signals": [
+        "overall.tasks_completed",
+        "overall.completion_status"
+      ],
+      "recommendation_conditions": {
+        "general_maintenance": true
+      },
+      "explanation_template": "Regular multi-modal check-ins enable reliable intra-individual trajectory tracking and personal baseline maintenance.",
+      "methodology_version": "v1.0-rule-based"
+    }
+  ]
+}
+

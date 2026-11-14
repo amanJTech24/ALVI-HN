@@ -190,17 +190,16 @@ window.ALVI = window.ALVI || {};
    * Example (on "Continue" without recording):
    *   ALVI.session.saveVoice({ completed: false, durationSeconds: 0 });
    */
-  // NEW FRONTEND-ONLY IMPLEMENTATION: support acoustic features, validation & rejection reasons
-  function saveVoice({ completed = false, durationSeconds = 0, isValid = true, rejectionReason = null, features = null } = {}) {
-    _merge({
-      voice: {
-        completed,
-        durationSeconds,
-        isValid,
-        rejectionReason,
-        features
-      }
-    });
+  // Phase 5: support full acoustic feature vectors, audio summary, and research predictions
+  function saveVoice(patch = {}) {
+    const safePatch = Object.assign({
+      completed: false,
+      durationSeconds: 0,
+      isValid: true,
+      rejectionReason: null,
+      features: null
+    }, patch);
+    _merge({ voice: safePatch });
   }
 
   // NEW FRONTEND-ONLY IMPLEMENTATION: support transcript, fact match arrays, and score
@@ -245,25 +244,19 @@ window.ALVI = window.ALVI || {};
    *     completed:      true
    *   });
    */
-  function saveMindplay({
-    ch1_selected   = [],
-    ch1_correct    = false,
-    ch1_score      = 0,
-    ch2_correct    = false,
-    ch3_correct    = false,
-    ch3_reactionMs = null,
-    completed      = false
-  } = {}) {
+  function saveMindplay(data = {}) {
+    const defaultData = {
+      ch1_selected   : [],
+      ch1_correct    : false,
+      ch1_score      : 0,
+      ch2_correct    : false,
+      ch3_correct    : false,
+      ch3_reactionMs : null,
+      completed      : false,
+      total_time_seconds: 0
+    };
     _merge({
-      mindplay: {
-        ch1_selected,
-        ch1_correct,
-        ch1_score,
-        ch2_correct,
-        ch3_correct,
-        ch3_reactionMs,
-        completed
-      }
+      mindplay: Object.assign(defaultData, data)
     });
   }
 
@@ -291,6 +284,48 @@ window.ALVI = window.ALVI || {};
     return s.activeCaseId || 'LIVE_JUDGE';
   }
 
+  // ── Practice Progress Completion Recording (Phase 9 & 10 Governance) ────────
+  function recordPracticeCompletion({ exerciseId, exerciseTitle, domain, score, durationSeconds, isDemo = false } = {}) {
+    try {
+      let history = [];
+      const stored = localStorage.getItem('alvi_practice_history');
+      if (stored) history = JSON.parse(stored);
+      if (!Array.isArray(history)) history = [];
+
+      const now = Date.now();
+      const pendingIdx = history.findIndex(p =>
+        p.exercise_id === exerciseId &&
+        p.status === 'initiated' &&
+        p.timestamp &&
+        (now - new Date(p.timestamp).getTime()) < 30 * 60 * 1000
+      );
+
+      const completedRecord = {
+        practice_id: pendingIdx >= 0 ? history[pendingIdx].practice_id : ('prac-' + now),
+        exercise_id: exerciseId,
+        exercise_title: exerciseTitle || exerciseId,
+        domain: domain || 'general',
+        score: score != null ? Math.round(Number(score) * 10) / 10 : null,
+        duration_seconds: durationSeconds ? Math.round(Number(durationSeconds)) : 180,
+        status: 'completed',
+        completed: true,
+        is_demo: Boolean(isDemo),
+        timestamp: new Date().toISOString()
+      };
+
+      if (pendingIdx >= 0) {
+        history[pendingIdx] = completedRecord;
+      } else {
+        history.unshift(completedRecord);
+      }
+
+      localStorage.setItem('alvi_practice_history', JSON.stringify(history));
+      return completedRecord;
+    } catch (_) {
+      return null;
+    }
+  }
+
   // ── Expose on window.ALVI.session ──────────────────────────────────────────
   window.ALVI.session = {
     init,
@@ -300,7 +335,8 @@ window.ALVI = window.ALVI || {};
     saveMindplay,
     reset,
     setActiveCase,
-    getActiveCase
+    getActiveCase,
+    recordPracticeCompletion
   };
 
 })();

@@ -1,0 +1,212 @@
+{
+  "stories": {
+    "aarav_story_v1": {
+      "id": "aarav_story_v1",
+      "title": "Aarav's Rainy Day",
+      "difficulty": "standard",
+      "text": "One rainy morning, Aarav left his home carrying a blue umbrella. He walked to the local market and bought three red apples. On his way back, he met his friend Meera and gave her one apple before returning home.",
+      "word_count": 38,
+      "information_units": [
+        {
+          "id": "iu_aarav",
+          "label": "Aarav (Protagonist)",
+          "category": "person",
+          "canonical_text": "Aarav left his home",
+          "core_concepts": ["aarav", "boy", "man"],
+          "accepted_synonyms": [
+            "aarav", "arav", "arrav", "aurav",
+            "the boy", "a boy", "the man", "a man",
+            "he", "protagonist", "young man", "kid"
+          ]
+        },
+        {
+          "id": "iu_rain",
+          "label": "Rainy morning",
+          "category": "time_weather",
+          "canonical_text": "One rainy morning",
+          "core_concepts": ["rain", "morning"],
+          "accepted_synonyms": [
+            "rainy morning", "rainy day", "rainy", "raining", "rain",
+            "wet morning", "stormy morning", "one morning it rained",
+            "morning when it rained", "it was raining"
+          ]
+        },
+        {
+          "id": "iu_umbrella",
+          "label": "Carrying a blue umbrella",
+          "category": "object",
+          "canonical_text": "carrying a blue umbrella",
+          "core_concepts": ["umbrella", "blue"],
+          "accepted_synonyms": [
+            "blue umbrella", "an umbrella", "the umbrella", "umbrella",
+            "blue parasol", "parasol", "carrying an umbrella",
+            "with an umbrella", "holding a blue umbrella", "held an umbrella"
+          ]
+        },
+        {
+          "id": "iu_market",
+          "label": "Walked to local market",
+          "category": "location_action",
+          "canonical_text": "walked to the local market",
+          "core_concepts": ["market", "walked"],
+          "accepted_synonyms": [
+            "local market", "market", "bazaar", "grocery store",
+            "grocery", "store", "shop", "supermarket", "village market",
+            "went to the market", "walked to the shop", "went shopping"
+          ]
+        },
+        {
+          "id": "iu_apples",
+          "label": "Bought three red apples",
+          "category": "action_object",
+          "canonical_text": "bought three red apples",
+          "core_concepts": ["apples", "three", "bought"],
+          "accepted_synonyms": [
+            "three red apples", "three apples", "3 red apples", "3 apples",
+            "red apples", "apples", "purchased three apples",
+            "bought apples", "purchased apples", "got three apples",
+            "bought 3 apples"
+          ]
+        },
+        {
+          "id": "iu_meera",
+          "label": "Met his friend Meera",
+          "category": "person_interaction",
+          "canonical_text": "met his friend Meera",
+          "core_concepts": ["meera", "friend"],
+          "accepted_synonyms": [
+            "friend meera", "meera", "mira", "his friend", "a friend",
+            "met meera", "saw meera", "bumped into meera", "encountered meera",
+            "his female friend", "friend named meera"
+          ]
+        },
+        {
+          "id": "iu_gave_apple",
+          "label": "Gave her one apple",
+          "category": "action_transfer",
+          "canonical_text": "gave her one apple",
+          "core_concepts": ["gave", "apple", "one"],
+          "accepted_synonyms": [
+            "gave her an apple", "gave her one apple", "gave one apple",
+            "gave 1 apple", "shared an apple", "handed her an apple",
+            "gifted an apple", "gave an apple to meera", "offered her an apple"
+          ]
+        },
+        {
+          "id": "iu_home",
+          "label": "Returned home",
+          "category": "location_action",
+          "canonical_text": "returning home",
+          "core_concepts": ["returned", "home"],
+          "accepted_synonyms": [
+            "returning home", "returned home", "return home", "went home",
+            "came back home", "went back", "came back", "headed home",
+            "arrived home", "walked back home", "home"
+          ]
+        }
+      ],
+      "expected_sequence": [
+        "iu_aarav",
+        "iu_rain",
+        "iu_umbrella",
+        "iu_market",
+        "iu_apples",
+        "iu_meera",
+        "iu_gave_apple",
+        "iu_home"
+      ],
+      "sequence_tiers": {
+        "iu_aarav": 0,
+        "iu_rain": 0,
+        "iu_umbrella": 1,
+        "iu_market": 2,
+        "iu_apples": 3,
+        "iu_meera": 4,
+        "iu_gave_apple": 5,
+        "iu_home": 6
+      },
+      "known_intrusions": [
+        "car", "automobile", "bus", "train", "bicycle", "bike",
+        "dog", "cat", "pet", "orange", "banana", "mango",
+        "knife", "gun", "police", "robbed", "stolen", "money",
+        "school", "office", "hospital", "doctor"
+      ]
+    },
+    "ravi_market_v1": {
+      "id": "ravi_market_v1",
+      "title": "Ravi's Bicycle Errand",
+      "difficulty": "standard",
+      "text": "On a sunny Tuesday afternoon, Ravi rode his bicycle to the village market to buy fresh vegetables. At the bakery, he bought warm bread and greeted the baker before riding back to his grandmother's cottage.",
+      "word_count": 35,
+      "information_units": [
+        {
+          "id": "iu_ravi",
+          "label": "Ravi (Protagonist)",
+          "category": "person",
+          "canonical_text": "Ravi rode his bicycle",
+          "core_concepts": ["ravi"],
+          "accepted_synonyms": ["ravi", "the boy", "a boy", "the man", "he"]
+        },
+        {
+          "id": "iu_tuesday",
+          "label": "Sunny Tuesday afternoon",
+          "category": "time_weather",
+          "canonical_text": "On a sunny Tuesday afternoon",
+          "core_concepts": ["tuesday", "afternoon", "sunny"],
+          "accepted_synonyms": ["tuesday afternoon", "sunny afternoon", "sunny tuesday", "tuesday"]
+        },
+        {
+          "id": "iu_bicycle",
+          "label": "Rode his bicycle",
+          "category": "transport",
+          "canonical_text": "rode his bicycle",
+          "core_concepts": ["bicycle", "rode"],
+          "accepted_synonyms": ["bicycle", "bike", "cycle", "rode his bike", "riding a bicycle"]
+        },
+        {
+          "id": "iu_vegetables",
+          "label": "Village market for vegetables",
+          "category": "location_action",
+          "canonical_text": "to the village market to buy fresh vegetables",
+          "core_concepts": ["market", "vegetables"],
+          "accepted_synonyms": ["village market", "market", "buy vegetables", "bought vegetables", "fresh vegetables"]
+        },
+        {
+          "id": "iu_bread",
+          "label": "Bought warm bread at bakery",
+          "category": "action_object",
+          "canonical_text": "bought warm bread at the bakery",
+          "core_concepts": ["bakery", "bread"],
+          "accepted_synonyms": ["warm bread", "bread", "loaf of bread", "bakery", "bought bread"]
+        },
+        {
+          "id": "iu_baker",
+          "label": "Greeted the baker",
+          "category": "person_interaction",
+          "canonical_text": "greeted the baker",
+          "core_concepts": ["baker", "greeted"],
+          "accepted_synonyms": ["greeted the baker", "said hello to the baker", "talked to the baker", "baker"]
+        },
+        {
+          "id": "iu_grandmother",
+          "label": "Rode back to grandmother's cottage",
+          "category": "location_action",
+          "canonical_text": "riding back to his grandmother's cottage",
+          "core_concepts": ["grandmother", "cottage", "home"],
+          "accepted_synonyms": ["grandmother's cottage", "grandmother", "grandma's house", "rode back", "cottage"]
+        }
+      ],
+      "expected_sequence": [
+        "iu_tuesday",
+        "iu_ravi",
+        "iu_bicycle",
+        "iu_vegetables",
+        "iu_bread",
+        "iu_baker",
+        "iu_grandmother"
+      ],
+      "known_intrusions": ["apple", "umbrella", "rain", "car", "bus", "train", "meat", "fish"]
+    }
+  }
+}
+

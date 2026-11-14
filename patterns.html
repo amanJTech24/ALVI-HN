@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALVI — Pattern Explorer</title>
+  <title>ALVI — Pattern Explorer &amp; Longitudinal Analytics</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,7 +58,7 @@
               <span class="text-xl font-bold tracking-tight text-white flex items-center gap-1.5">
                 ALVI <span class="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">PROTOTYPE</span>
               </span>
-              <p class="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">Voice & Cognitive Intelligence</p>
+              <p class="text-[11px] text-slate-400 font-medium leading-tight mt-0.5">Voice &amp; Cognitive Intelligence</p>
             </div>
           </div>
         </div>
@@ -85,12 +85,12 @@
           </button>
 
           <div class="pt-3 pb-1 px-3">
-            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Analytics & History</p>
+            <p class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Analytics &amp; History</p>
           </div>
 
           <button data-page="cognitive-journey" class="nav-item flex items-center w-full px-3.5 py-3 text-sm font-medium rounded-xl transition-all duration-200 group">
             <span class="w-7 h-7 rounded-lg flex items-center justify-center mr-3 text-base group-hover:scale-110 transition-transform">📈</span>
-            <span>Cognitive Journey</span>
+            <span>Learning &amp; Journey</span>
           </button>
 
           <button data-page="pattern-explorer" class="nav-item active flex items-center w-full px-3.5 py-3 text-sm font-medium rounded-xl transition-all duration-200 group">
@@ -134,74 +134,308 @@
         <div class="flex items-center space-x-3">
           <span id="page-icon" class="text-2xl">🔬</span>
           <div>
-            <h2 id="header-title" class="text-xl font-bold text-slate-900">Pattern Explorer</h2>
-            <p id="header-subtitle" class="text-xs text-slate-500">Compare individual trends with anonymized reference ranges</p>
+            <h2 id="header-title" class="text-xl font-bold text-slate-900">Pattern Explorer &amp; Longitudinal Analytics</h2>
+            <p id="header-subtitle" class="text-xs text-slate-500">Explore factual multi-session performance patterns across speech, memory, and cognitive challenges</p>
           </div>
         </div>
         
         <div class="flex items-center space-x-4">
           <div class="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-xs font-medium text-indigo-900">
             <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
-            <span>"Every voice has a history. AI helps reveal changes over time."</span>
+            <span>"Factual longitudinal analytics without artificial cognitive progression scores."</span>
           </div>
 
-          <button id="quick-checkin-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all flex items-center space-x-2">
+          <button id="quick-checkin-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all flex items-center space-x-2" onclick="window.location.href='voice.html'">
             <span>🎙️ New Check-in</span>
           </button>
         </div>
       </header>
 
-      <div id="pages-container" class="p-8 flex-1 max-w-7xl w-full mx-auto">
+      <div id="pages-container" class="p-8 flex-1 max-w-7xl w-full mx-auto space-y-8">
 
-        <!-- PATTERN EXPLORER SECTION -->
-        <section id="page-pattern-explorer" class="page-view space-y-8 max-w-5xl mx-auto">
+        <!-- PATTERN EXPLORER MAIN SECTION -->
+        <section id="page-pattern-explorer" class="page-view space-y-6 max-w-5xl mx-auto">
+          
+          <!-- Top Row: Title, Date Filter & Action Buttons -->
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Comparative Analytics</span>
+              <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">Longitudinal Performance Analytics</span>
               <h1 class="text-3xl font-extrabold text-slate-900 mt-2">Pattern Explorer</h1>
-              <p class="text-xs text-slate-500 mt-1">Explore how your patterns relate to anonymized reference trends.</p>
+              <p class="text-xs text-slate-500 mt-1">Examine genuine session-to-session metrics across acoustic voice, story recall, game telemetry, and practice habits.</p>
             </div>
 
-            <div id="explorer-toggles" class="flex p-1 bg-slate-200/80 rounded-2xl text-xs font-bold text-slate-600">
-              <button data-exp-filter="overall" class="exp-btn active px-3.5 py-2 rounded-xl transition">Overall</button>
-              <button data-exp-filter="voice" class="exp-btn px-3.5 py-2 rounded-xl transition">Voice</button>
-              <button data-exp-filter="recall" class="exp-btn px-3.5 py-2 rounded-xl transition">Recall</button>
-              <button data-exp-filter="response" class="exp-btn px-3.5 py-2 rounded-xl transition">Response</button>
+            <div class="flex items-center flex-wrap gap-2">
+              <!-- Date Range Filter -->
+              <select id="date-range-filter" class="px-3 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="all">All Time</option>
+                <option value="90d">Last 90 Days</option>
+                <option value="30d">Last 30 Days</option>
+              </select>
+
+              <!-- Refresh Button -->
+              <button id="btn-refresh-patterns" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm flex items-center gap-1.5 transition">
+                <span>🔄</span> Refresh
+              </button>
+
+              <!-- Export Data Button -->
+              <button id="btn-export-patterns" class="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-sm flex items-center gap-1.5 transition">
+                <span>📥</span> Export JSON
+              </button>
             </div>
           </div>
 
-          <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
-            <div class="flex items-center justify-between">
+          <!-- History Status & Threshold Banner -->
+          <div id="history-status-banner" class="p-5 rounded-3xl bg-slate-900 text-white shadow-lg border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3.5">
+              <div id="banner-icon" class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-lg shrink-0">
+                📊
+              </div>
               <div>
-                <h3 class="text-lg font-bold text-slate-900">Personal Journey vs Anonymized Reference Range</h3>
-                <p class="text-xs text-slate-400">Comparing pitch variation, acoustic latency, and lexical density.</p>
-              </div>
-
-              <div class="flex items-center space-x-4 text-xs font-semibold">
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-indigo-600"></span> Personal Journey</span>
-                <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-purple-100 border border-purple-300"></span> Reference Range</span>
+                <div class="flex items-center gap-2">
+                  <h3 id="banner-heading" class="text-sm font-bold text-white">Analyzing Recorded Check-ins</h3>
+                  <span id="banner-threshold-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+                    Loading
+                  </span>
+                </div>
+                <p id="banner-description" class="text-xs text-slate-300 mt-0.5 max-w-2xl leading-relaxed">
+                  Connecting to FastAPI analytics engine to evaluate multi-session parameters...
+                </p>
               </div>
             </div>
 
-            <div class="relative w-full h-80">
+            <div id="banner-sessions-count-pill" class="text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-800 text-slate-300 border border-slate-700 shrink-0">
+              0 Sessions Loaded
+            </div>
+          </div>
+
+          <!-- Offline / Local Mode Notice (shown if backend unavailable) -->
+          <div id="offline-mode-alert" class="hidden p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-900 text-xs flex items-center justify-between gap-3">
+            <div class="flex items-center space-x-2">
+              <span class="text-base">⚡</span>
+              <p><span class="font-bold">Local Analytics Mode:</span> Backend server is offline. Historical metrics are displayed from browser storage using client-side calculation.</p>
+            </div>
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-200 text-amber-900">Offline</span>
+          </div>
+
+          <!-- Domain Navigation Tabs -->
+          <div class="flex p-1.5 bg-slate-200/80 rounded-2xl text-xs font-bold text-slate-600 gap-1 overflow-x-auto custom-scrollbar" id="domain-tabs">
+            <button data-domain="overview" class="domain-tab-btn active px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
+              <span>🌐</span> Multi-Modal Overview
+            </button>
+            <button data-domain="voice" class="domain-tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
+              <span>🎙️</span> Voice Acoustics
+            </button>
+            <button data-domain="story" class="domain-tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
+              <span>📖</span> Story Recall
+            </button>
+            <button data-domain="mindplay" class="domain-tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
+              <span>🎮</span> MindPlay Telemetry
+            </button>
+            <button data-domain="practice" class="domain-tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0">
+              <span>🎯</span> Practice Engagement
+            </button>
+          </div>
+
+          <!-- Metric Selector Ribbon (dynamically populated for active domain) -->
+          <div id="metric-selector-wrapper" class="p-4 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Select Parameter to Chart:</span>
+              <span id="metric-domain-label" class="text-xs font-bold text-indigo-600">Voice Acoustics</span>
+            </div>
+            <div id="metric-buttons-container" class="flex flex-wrap gap-2">
+              <!-- Dynamically rendered metric pills -->
+            </div>
+          </div>
+
+          <!-- Primary Interactive Chart & Statistics Card -->
+          <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+            
+            <!-- Chart Header & Mode Badge -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h3 id="active-metric-title" class="text-lg font-bold text-slate-900">Mean Fundamental Frequency (F0)</h3>
+                  <span id="active-metric-unit-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-50 text-indigo-700 border border-indigo-200">
+                    Hz
+                  </span>
+                </div>
+                <p id="active-metric-description" class="text-xs text-slate-400 mt-0.5">
+                  Acoustic pitch center of voiced speech frames across recorded check-ins.
+                </p>
+              </div>
+
+              <div class="flex items-center gap-2 self-start sm:self-center">
+                <span id="active-metric-mode-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                  Descriptive Trend
+                </span>
+              </div>
+            </div>
+
+            <!-- 5 KPI Summary Stat Tiles -->
+            <div class="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Observations</p>
+                <p id="stat-points-count" class="text-xl font-extrabold text-slate-900">0</p>
+                <p class="text-[10px] text-slate-500">valid check-ins</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Baseline (First)</p>
+                <p id="stat-baseline-val" class="text-xl font-extrabold text-slate-700">—</p>
+                <p id="stat-baseline-unit" class="text-[10px] text-slate-500">initial value</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Latest Session</p>
+                <p id="stat-latest-val" class="text-xl font-extrabold text-indigo-600">—</p>
+                <p id="stat-latest-unit" class="text-[10px] text-slate-500">most recent</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Personal Mean</p>
+                <p id="stat-mean-val" class="text-xl font-extrabold text-slate-900">—</p>
+                <p id="stat-range-val" class="text-[10px] text-slate-500">Range: —</p>
+              </div>
+
+              <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-1 col-span-2 sm:col-span-1">
+                <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Delta Change</p>
+                <p id="stat-delta-val" class="text-xl font-extrabold text-slate-900">—</p>
+                <p id="stat-delta-pct" class="text-[10px] text-slate-500">vs baseline</p>
+              </div>
+            </div>
+
+            <!-- Canvas Container -->
+            <div class="relative w-full h-80" id="chart-canvas-container">
               <canvas id="pattern-explorer-chart"></canvas>
+              
+              <!-- Empty state overlay if zero observations -->
+              <div id="chart-empty-state-overlay" class="hidden absolute inset-0 bg-white/95 rounded-2xl flex flex-col items-center justify-center text-center p-6 space-y-2 z-10">
+                <span class="text-4xl">🌱</span>
+                <h4 class="text-base font-bold text-slate-800">No Recorded Data for This Parameter</h4>
+                <p class="text-xs text-slate-500 max-w-md">
+                  Complete a check-in involving this task to record your first observational measurement.
+                </p>
+              </div>
+            </div>
+
+            <!-- Interactive Point Inspection Card -->
+            <div id="point-inspect-card" class="p-5 rounded-2xl bg-slate-900 text-white border border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs gap-4 transition-all">
+              <div class="flex items-center space-x-4">
+                <div class="w-10 h-10 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold text-base">
+                  🔍
+                </div>
+                <div>
+                  <h4 id="inspect-point-title" class="font-bold text-white text-sm">SELECT A DATA POINT</h4>
+                  <p id="inspect-point-detail" class="text-slate-300 text-xs mt-0.5">Click any circle in the graph above to view exact measurement parameters and session metadata.</p>
+                </div>
+              </div>
+
+              <div class="flex items-center space-x-3 shrink-0">
+                <span id="inspect-point-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700">
+                  Awaiting Selection
+                </span>
+              </div>
+            </div>
+
+            <!-- Scientific Context Callout for active metric -->
+            <div id="metric-scientific-note-box" class="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-start space-x-3 text-xs text-indigo-950">
+              <span class="text-base shrink-0">💡</span>
+              <p id="metric-scientific-note-text" class="leading-relaxed">
+                Acoustic pitch center naturally shifts across time with speaking tempo, emotion, background noise, and microphone positioning.
+              </p>
             </div>
           </div>
 
-          <div class="p-6 rounded-3xl bg-amber-50 border border-amber-200 text-amber-950 text-xs space-y-2">
-            <h4 class="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
-              <span>⚠️</span> Important Analytical Notice
-            </h4>
-            <p class="leading-relaxed">
-              "Reference patterns are shown for analytical context. Similarity does not represent a diagnosis."
-            </p>
+          <!-- Multi-Modal Recent Delta Card -->
+          <div id="recent-delta-card" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-100">
+              <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-100">Pairwise Session Delta</span>
+                <h3 class="text-lg font-bold text-slate-900 mt-1">Previous vs. Latest Check-in Comparison</h3>
+              </div>
+              <span id="recent-delta-dates" class="text-xs font-semibold text-slate-400">Comparing last two sessions</span>
+            </div>
+
+            <div id="recent-delta-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <!-- Dynamically populated comparison tiles -->
+            </div>
           </div>
+
+          <!-- Practice Engagement & Milestones Section -->
+          <div id="practice-analytics-card" class="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl space-y-6">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+              <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-lg">
+                  🎯
+                </div>
+                <div>
+                  <h3 class="text-lg font-bold text-slate-900">Practice Engagement &amp; Repetition Habits</h3>
+                  <p class="text-xs text-slate-500">Completed cognitive practice sessions (initiated-only and demo attempts excluded)</p>
+                </div>
+              </div>
+
+              <span id="practice-consistency-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                Starting Out
+              </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Completed</p>
+                <p id="practice-stat-total" class="text-2xl font-extrabold text-slate-900">0</p>
+                <p class="text-[10px] text-slate-500">completed drills</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Unique Drills</p>
+                <p id="practice-stat-unique" class="text-2xl font-extrabold text-indigo-600">0 / 6</p>
+                <p class="text-[10px] text-slate-500">distinct exercises</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active Days</p>
+                <p id="practice-stat-days" class="text-2xl font-extrabold text-emerald-600">0</p>
+                <p class="text-[10px] text-slate-500">practice days</p>
+              </div>
+              <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Practice Time</p>
+                <p id="practice-stat-time" class="text-2xl font-extrabold text-purple-600">0m</p>
+                <p class="text-[10px] text-slate-500">cumulative engagement</p>
+              </div>
+            </div>
+
+            <div id="practice-bests-list" class="space-y-2 pt-2">
+              <!-- Populated personal bests per exercise -->
+            </div>
+          </div>
+
+          <!-- Scientific Governance Notice Card -->
+          <div class="p-6 rounded-3xl bg-amber-50/90 border border-amber-200/90 text-amber-950 text-xs space-y-3">
+            <h4 class="font-bold text-amber-900 flex items-center gap-1.5 text-sm">
+              <span>⚠️</span> Scientific &amp; Analytical Governance Notice
+            </h4>
+            <div class="space-y-2 leading-relaxed text-amber-900/90">
+              <p>
+                <span class="font-bold">Task Practice &amp; Familiarity Effects:</span>
+                Repeated exposure to identical or similar cognitive tasks naturally leads to score improvements resulting from procedural test-retest learning, stimulus familiarity, and reduced anxiety. Such performance trajectories reflect task-specific learning and do not signify clinical stabilization or biological reversal of underlying neuropathology.
+              </p>
+              <p>
+                <span class="font-bold">Acoustic Recording Variance:</span>
+                Acoustic parameters (fundamental frequency, zero-crossing rate, low-energy frame proportions) are influenced by microphone sensitivity, ambient room acoustics, speaking distance, and user fatigue. Observational shifts do not constitute medical evidence of disease progression.
+              </p>
+              <p>
+                <span class="font-bold">Non-Diagnostic Research Tool:</span>
+                ALVI Pattern Explorer provides observational data for personal self-monitoring and cognitive engagement tracking. It does not calculate disease progression scores or replace clinical medical evaluation by licensed healthcare professionals.
+              </p>
+            </div>
+          </div>
+
         </section>
 
       </div>
     </main>
   </div>
 
+  <script src="js/session.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/patterns.js"></script>

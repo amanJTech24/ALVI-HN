@@ -288,34 +288,56 @@
 
             <!-- MINDPLAY COMPLETE STATS SUMMARY CARD -->
             <div id="mindplay-summary" class="hidden space-y-6 text-center py-4">
-              <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-lg">
+              <div id="summary-icon-container" class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl mx-auto shadow-lg">
                 ✓
               </div>
 
               <div>
-                <span class="text-xs font-bold uppercase tracking-widest text-emerald-600">CHALLENGE SUCCESS</span>
-                <h2 class="text-3xl font-extrabold text-slate-900">MINDPLAY COMPLETE</h2>
-                <p class="text-xs text-slate-500 mt-1">Your cognitive responses have been processed.</p>
+                <span id="summary-tag" class="text-xs font-bold uppercase tracking-widest text-emerald-600">CHALLENGE SUCCESS</span>
+                <h2 id="summary-heading" class="text-3xl font-extrabold text-slate-900 mt-1">MINDPLAY COMPLETE</h2>
+                <p id="summary-subheading" class="text-xs text-slate-500 mt-1">Your empirical cognitive responses have been analyzed by the ALVI analytics engine.</p>
+                <div id="summary-badge-container" class="mt-3 flex items-center justify-center gap-2">
+                  <span id="summary-composite-score" class="text-sm font-extrabold px-3.5 py-1 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">Score: --%</span>
+                  <span id="summary-performance-band" class="text-xs font-bold px-3 py-1 rounded-full bg-emerald-600 text-white">High Performance</span>
+                </div>
+                <p id="summary-band-desc" class="text-xs text-slate-600 max-w-md mx-auto mt-2 italic"></p>
               </div>
 
               <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                <div>
-                  <p class="text-xs text-slate-400 uppercase font-semibold">Recall Accuracy</p>
-                  <p id="summary-recall" class="text-xl font-black text-indigo-600 mt-1"></p>
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-xs">
+                  <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Dual Binding</p>
+                  <p id="summary-recall" class="text-lg font-black text-indigo-600 mt-1">--</p>
+                  <span id="summary-recall-detail" class="text-[10px] text-slate-400 block mt-0.5">Targets: 2/2</span>
                 </div>
 
-                <div>
-                  <p class="text-xs text-slate-400 uppercase font-semibold">Response Pattern</p>
-                  <p id="summary-pattern" class="text-base font-bold text-emerald-600 mt-1"></p>
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-xs">
+                  <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Chronology</p>
+                  <p id="summary-pattern" class="text-lg font-bold text-emerald-600 mt-1">--</p>
+                  <span id="summary-pattern-detail" class="text-[10px] text-slate-400 block mt-0.5">0 Inversions</span>
                 </div>
 
-                <div>
-                  <p class="text-xs text-slate-400 uppercase font-semibold">Completion Time</p>
-                  <p id="summary-time" class="text-base font-mono font-bold text-slate-800 mt-1"></p>
+                <div class="bg-white p-3 rounded-xl border border-slate-100 shadow-xs">
+                  <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Search Latency</p>
+                  <p id="summary-reaction" class="text-lg font-mono font-bold text-slate-800 mt-1">--</p>
+                  <span id="summary-time" class="text-[10px] text-slate-400 block mt-0.5">Total: --s</span>
                 </div>
               </div>
 
-              <div class="pt-4">
+              <!-- Personal History / Trajectory Card -->
+              <div id="summary-history-box" class="max-w-lg mx-auto bg-indigo-50/70 p-3.5 rounded-2xl border border-indigo-100 text-left text-xs space-y-1">
+                <div class="flex items-center justify-between font-bold text-indigo-950">
+                  <span class="flex items-center gap-1.5"><span>📈</span> Personal Trajectory</span>
+                  <span id="history-sessions-count" class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-200 text-indigo-900 font-semibold">1 session</span>
+                </div>
+                <p id="history-summary-text" class="text-[11px] text-indigo-900 leading-relaxed">Completed live check-in.</p>
+              </div>
+
+              <!-- Disclaimer -->
+              <p id="mindplay-scoring-disclaimer" class="text-[10px] text-slate-500 italic max-w-lg mx-auto leading-relaxed border-t border-slate-200/60 pt-3">
+                MindPlay challenges are experimental, non-clinical behavioral assessments of working memory and search latency. They do not constitute a clinical medical diagnosis.
+              </p>
+
+              <div class="pt-2">
                 <button id="analyze-checkin-btn" class="px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-xl shadow-indigo-600/30 hover:scale-105 transition-all text-sm">
                   Analyze My Check-in →
                 </button>
@@ -334,6 +356,7 @@
   <script src="js/storage.js"></script>
   <script src="js/dataset.js"></script>
   <script src="js/session.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/mindplay.js"></script>
 </body>
 </html>

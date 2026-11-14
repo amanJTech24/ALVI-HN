@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ALVI — AI Insights</title>
+  <title>ALVI — Gemma 4 AI Insights & Cognitive Explanation</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -130,15 +130,16 @@
         <div class="flex items-center space-x-3">
           <span id="page-icon" class="text-2xl">🧠</span>
           <div>
-            <h2 id="header-title" class="text-xl font-bold text-slate-900">AI Insights</h2>
-            <p id="header-subtitle" class="text-xs text-slate-500">Detailed parameter comparisons against established baseline</p>
+            <h2 id="header-title" class="text-xl font-bold text-slate-900">Gemma 4 AI Insights</h2>
+            <p id="header-subtitle" class="text-xs text-slate-500">Personalized Cognitive Explanations Grounded in Authentic Measurements</p>
           </div>
         </div>
         
-        <div class="flex items-center space-x-4">
-          <div class="hidden lg:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-xs font-medium text-indigo-900">
-            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-ping"></span>
-            <span>"Every voice has a history. AI helps reveal changes over time."</span>
+        <div class="flex items-center space-x-3">
+          <!-- AI Provider Badge -->
+          <div id="ai-provider-pill" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-xs font-semibold text-indigo-900 shadow-sm">
+            <span id="ai-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span id="ai-model-label">Gemma 4 (26B-A4B-IT)</span>
           </div>
 
           <button id="quick-checkin-btn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-semibold shadow-md shadow-indigo-600/20 transition-all flex items-center space-x-2">
@@ -147,138 +148,307 @@
         </div>
       </header>
 
-      <div id="pages-container" class="p-8 flex-1 max-w-7xl w-full mx-auto">
+      <div id="pages-container" class="p-8 flex-1 max-w-7xl w-full mx-auto space-y-6">
 
         <!-- AI INSIGHTS SECTION -->
-        <section id="page-ai-insights" class="page-view space-y-8 max-w-4xl mx-auto">
-          <div>
-            <span class="text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Diagnostic Pattern Analysis</span>
-            <h1 class="text-3xl font-extrabold text-slate-900 mt-2">Understanding Today's Patterns</h1>
-            <p class="text-xs text-slate-500 mt-1">Detailed metric comparison against your personal baseline.</p>
-          </div>
+        <section id="page-ai-insights" class="page-view space-y-6 max-w-5xl mx-auto">
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Card 1: Pause Pattern -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span>⏸</span> PAUSE PATTERN
-                </h3>
-                <span class="text-[11px] font-semibold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">+14% Hesitation</span>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                More variation compared with recent recordings. Silent gaps observed before complex noun clauses.
-              </p>
-              <div class="space-y-1.5 pt-2 text-xs">
-                <div class="flex justify-between text-slate-500">
-                  <span>Established Baseline:</span>
-                  <span class="font-bold text-slate-700">0.8 sec</span>
+          <!-- Top Status & User Consent Banner -->
+          <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 shadow-xl border border-indigo-900/50 relative overflow-hidden">
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div class="space-y-2 max-w-2xl">
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-300 border border-indigo-400/30">
+                    Phase 11 Intelligence Engine
+                  </span>
+                  <span id="ai-offline-badge" class="hidden text-[10px] uppercase tracking-wider font-extrabold px-2.5 py-0.5 rounded-full bg-amber-500/30 text-amber-300 border border-amber-400/30">
+                    Deterministic Fallback Mode
+                  </span>
                 </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-emerald-500 h-full rounded-full" style="width: 50%"></div>
-                </div>
-
-                <div class="flex justify-between text-slate-500 pt-1">
-                  <span>Today's Recording:</span>
-                  <span class="font-bold text-amber-600">1.4 sec</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-amber-500 h-full rounded-full" style="width: 80%"></div>
+                <h1 class="text-2xl font-black text-white tracking-tight">Personalized Cognitive Explanations</h1>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                  ALVI pairs Google's Gemma 4 model with your genuine acoustic features, story recall accuracy, and MindPlay reaction timing to explain task patterns objectively without diagnostic speculation.
+                </p>
+                <div class="flex items-center space-x-2 pt-1 text-[11px] text-slate-300">
+                  <input type="checkbox" id="user-consent-checkbox" checked class="w-4 h-4 rounded text-indigo-600 bg-slate-800 border-slate-600 focus:ring-indigo-500 cursor-pointer">
+                  <label for="user-consent-checkbox" class="cursor-pointer select-none">
+                    I consent to analyzing my numeric assessment measurements with the Gemma 4 engine (raw audio is never shared).
+                  </label>
                 </div>
               </div>
-            </div>
 
-            <!-- Card 2: Speech Flow -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span>🗣</span> SPEECH FLOW
-                </h3>
-                <span class="text-[11px] font-semibold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">Pitch Shift</span>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                Different from your established baseline. Pitch variability registered a 6% deviation during story retelling.
-              </p>
-              <div class="space-y-1.5 pt-2 text-xs">
-                <div class="flex justify-between text-slate-500">
-                  <span>Baseline Cadence:</span>
-                  <span class="font-bold text-slate-700">135 wpm</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-indigo-500 h-full rounded-full" style="width: 75%"></div>
-                </div>
-
-                <div class="flex justify-between text-slate-500 pt-1">
-                  <span>Today's Cadence:</span>
-                  <span class="font-bold text-amber-600">120 wpm</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-amber-500 h-full rounded-full" style="width: 65%"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Card 3: Story Recall -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span>📖</span> STORY RECALL
-                </h3>
-                <span class="text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">4 / 5 Anchors</span>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                One key story element was not recalled. Omitted the detail regarding friend Meera receiving an apple.
-              </p>
-              <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
-                <p class="font-semibold text-slate-800">Recalled Elements:</p>
-                <p class="text-slate-500 text-[11px]">✓ Aarav left home · ✓ Blue Umbrella · ✓ Local Market · ✓ 3 Red Apples</p>
-                <p class="text-amber-600 font-semibold text-[11px] pt-1">✗ Missing: Gifted apple to Meera</p>
-              </div>
-            </div>
-
-            <!-- Card 4: Response Timing -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-lg space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <span>⏱</span> RESPONSE TIMING
-                </h3>
-                <span class="text-[11px] font-semibold text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">+1.2s Latency</span>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed">
-                Slightly slower than your recent average. MindPlay sequence challenge latency was +1.2s.
-              </p>
-              <div class="space-y-1.5 pt-2 text-xs">
-                <div class="flex justify-between text-slate-500">
-                  <span>Baseline Response Time:</span>
-                  <span class="font-bold text-slate-700">2.1s average</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-emerald-500 h-full rounded-full" style="width: 40%"></div>
-                </div>
-
-                <div class="flex justify-between text-slate-500 pt-1">
-                  <span>Today's Response Time:</span>
-                  <span class="font-bold text-amber-600">3.3s average</span>
-                </div>
-                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                  <div class="bg-amber-500 h-full rounded-full" style="width: 65%"></div>
-                </div>
+              <div class="shrink-0 flex flex-col items-end space-y-2">
+                <button id="btn-generate-insights" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-xs shadow-lg shadow-indigo-500/30 transition-all flex items-center space-x-2">
+                  <span id="btn-generate-spinner" class="hidden animate-spin">🔄</span>
+                  <span id="btn-generate-text">✨ Generate AI Insights</span>
+                </button>
+                <p id="last-generated-time" class="text-[10px] text-slate-400">Ready to analyze active session</p>
               </div>
             </div>
           </div>
 
-          <div class="bg-slate-900 text-slate-200 rounded-3xl p-6 border border-slate-800 text-xs space-y-2">
-            <h4 class="font-bold text-white text-sm flex items-center gap-2">💡 Understanding Baseline Dynamics</h4>
-            <p class="leading-relaxed text-slate-300">
-              "Individual changes can occur for many reasons (such as sleep quality, fatigue, stress, or time of day). ALVI tracks patterns over time rather than drawing conclusions from a single check-in."
+          <!-- Tab Navigation: Insights Overview vs AI Assistant Chat vs Grounded Data -->
+          <div class="flex items-center border-b border-slate-200 space-x-6 text-sm font-semibold">
+            <button id="tab-btn-insights" class="pb-3 border-b-2 border-indigo-600 text-indigo-600 flex items-center space-x-2 transition-all">
+              <span>📊 Cognitive Explanations</span>
+            </button>
+            <button id="tab-btn-chat" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 flex items-center space-x-2 transition-all">
+              <span>💬 Gemma 4 Assistant Chat</span>
+              <span class="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">Interactive</span>
+            </button>
+            <button id="tab-btn-ground" class="pb-3 border-b-2 border-transparent text-slate-500 hover:text-slate-900 flex items-center space-x-2 transition-all">
+              <span>🔬 Grounded Measurements</span>
+            </button>
+          </div>
+
+          <!-- TAB 1: COGNITIVE EXPLANATIONS -->
+          <div id="tab-content-insights" class="space-y-6">
+
+            <!-- Session Summary Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                  <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg">
+                    📋
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-slate-900">Session Overview</h3>
+                    <p class="text-xs text-slate-500">Summary of active multi-modal assessment tasks</p>
+                  </div>
+                </div>
+                <span id="overview-badge" class="text-[11px] font-semibold text-indigo-700 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-100">
+                  Active Session
+                </span>
+              </div>
+              <p id="overview-text" class="text-xs text-slate-700 leading-relaxed bg-slate-50/70 p-4 rounded-2xl border border-slate-100">
+                Click "Generate AI Insights" above to synthesize active acoustic, recall, and executive measurements.
+              </p>
+            </div>
+
+            <!-- 3 Core Domains Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+              <!-- Card 1: Acoustic Voice Observations -->
+              <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">🎙️ Acoustic Voice</span>
+                    <span id="voice-metric-badge" class="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">—</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900">Speech Prosody & Pacing</h4>
+                  <p id="voice-obs-text" class="text-xs text-slate-600 leading-relaxed">
+                    Acoustic voice analysis measures vocal frequency, low-energy pause ratios, and sound energy consistency.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] space-y-1 text-slate-500" id="voice-key-metrics-list">
+                  <div class="flex justify-between"><span>Pitch (F0 Mean):</span><span id="voice-f0-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Pause Ratio:</span><span id="voice-pause-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Speech Duration:</span><span id="voice-dur-val" class="font-bold text-slate-700">—</span></div>
+                </div>
+              </div>
+
+              <!-- Card 2: Narrative Recall Observations -->
+              <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-purple-600 bg-purple-50 px-2.5 py-1 rounded-full">📖 Story Recall</span>
+                    <span id="story-metric-badge" class="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">—</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900">Episodic Information Units</h4>
+                  <p id="memory-obs-text" class="text-xs text-slate-600 leading-relaxed">
+                    Evaluates spontaneous retrieval of core narrative anchors (characters, objects, actions, places) without prompts.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] space-y-1 text-slate-500" id="story-key-metrics-list">
+                  <div class="flex justify-between"><span>Completeness Score:</span><span id="story-score-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Anchors Recalled:</span><span id="story-recalled-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Anchors Omitted:</span><span id="story-missed-val" class="font-bold text-slate-700">—</span></div>
+                </div>
+              </div>
+
+              <!-- Card 3: MindPlay Executive Observations -->
+              <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">🎮 MindPlay</span>
+                    <span id="mindplay-metric-badge" class="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">—</span>
+                  </div>
+                  <h4 class="text-sm font-bold text-slate-900">Sequencing & Reaction Speed</h4>
+                  <p id="exec-obs-text" class="text-xs text-slate-600 leading-relaxed">
+                    Measures visual-verbal dual binding, chronological working memory ordering, and rapid visual search discrimination.
+                  </p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] space-y-1 text-slate-500" id="mindplay-key-metrics-list">
+                  <div class="flex justify-between"><span>Dual Feature Binding:</span><span id="mp-binding-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Chronological Sequence:</span><span id="mp-seq-val" class="font-bold text-slate-700">—</span></div>
+                  <div class="flex justify-between"><span>Search Reaction Latency:</span><span id="mp-latency-val" class="font-bold text-slate-700">—</span></div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Strengths, Opportunities & Learning Recommendations -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+              <!-- Strengths & Growth -->
+              <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex items-center space-x-2">
+                  <span class="text-lg">🌟</span>
+                  <h3 class="text-base font-bold text-slate-900">Observed Strengths</h3>
+                </div>
+                <ul id="strengths-list" class="space-y-2 text-xs text-slate-700">
+                  <li class="flex items-start gap-2 bg-emerald-50/50 p-2.5 rounded-xl border border-emerald-100 text-emerald-900">
+                    <span>✓</span> <span>Complete assessment check-in tasks recorded in session.</span>
+                  </li>
+                </ul>
+
+                <div class="pt-3 border-t border-slate-100">
+                  <div class="flex items-center space-x-2 mb-2">
+                    <span class="text-lg">🎯</span>
+                    <h3 class="text-base font-bold text-slate-900">Opportunities for Growth</h3>
+                  </div>
+                  <ul id="growth-list" class="space-y-2 text-xs text-slate-700">
+                    <li class="flex items-start gap-2 bg-amber-50/50 p-2.5 rounded-xl border border-amber-100 text-amber-900">
+                      <span>•</span> <span>Continue regular longitudinal check-ins to establish personal trend stability.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Recommended Focus & Learning Path -->
+              <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center space-x-2">
+                      <span class="text-lg">🚀</span>
+                      <h3 class="text-base font-bold text-slate-900">Recommended Practice Focus</h3>
+                    </div>
+                    <a href="journey.html" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 transition">View Journey →</a>
+                  </div>
+                  <p class="text-xs text-slate-500 mb-3">Targeted drills recommended based on your recent task measurements:</p>
+                  <ul id="focus-list" class="space-y-2.5 text-xs text-slate-700">
+                    <li class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+                      <span class="text-indigo-600 font-bold text-sm">1</span>
+                      <div>
+                        <p class="font-bold text-slate-800">Narrative Recall & Anchor Retrieval</p>
+                        <p class="text-slate-500 text-[11px] mt-0.5">Strengthens episodic detail anchoring and spontaneous story retell completeness.</p>
+                      </div>
+                    </li>
+                    <li class="p-3 rounded-2xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+                      <span class="text-indigo-600 font-bold text-sm">2</span>
+                      <div>
+                        <p class="font-bold text-slate-800">Visual Search Agility</p>
+                        <p class="text-slate-500 text-[11px] mt-0.5">Focuses on rapid target discrimination under live reaction timing.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <div class="p-3 rounded-xl bg-indigo-50/70 border border-indigo-100 text-[11px] text-indigo-900 flex items-center justify-between mt-4">
+                  <span class="font-medium">Ready to practice now?</span>
+                  <a href="journey.html" class="px-3 py-1 rounded-lg bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition">Start Drills</a>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- TAB 2: INTERACTIVE GEMMA 4 ASSISTANT CHAT -->
+          <div id="tab-content-chat" class="hidden space-y-4">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div class="flex items-center space-x-3">
+                  <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-500/20">
+                    🤖
+                  </div>
+                  <div>
+                    <h3 class="text-base font-bold text-slate-900">Gemma 4 Cognitive Assistant</h3>
+                    <p class="text-xs text-slate-500">Ask questions regarding your acoustic features, recall score, or game latencies</p>
+                  </div>
+                </div>
+                <button id="btn-clear-chat" class="text-xs text-slate-400 hover:text-slate-600 transition font-medium">Clear Chat</button>
+              </div>
+
+              <!-- Quick Prompt Suggestion Chips -->
+              <div class="flex flex-wrap gap-2 pt-1">
+                <button class="quick-chip text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-3 py-1.5 rounded-full transition border border-slate-200">
+                  Why is my pause ratio important?
+                </button>
+                <button class="quick-chip text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-3 py-1.5 rounded-full transition border border-slate-200">
+                  What do my Story Recall results mean?
+                </button>
+                <button class="quick-chip text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-3 py-1.5 rounded-full transition border border-slate-200">
+                  How does visual search latency reflect cognitive agility?
+                </button>
+                <button class="quick-chip text-xs bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-3 py-1.5 rounded-full transition border border-slate-200">
+                  What practice activities should I focus on?
+                </button>
+              </div>
+
+              <!-- Chat Message Window -->
+              <div id="chat-messages-container" class="h-96 overflow-y-auto space-y-3 p-4 rounded-2xl bg-slate-50 border border-slate-200/80 custom-scrollbar">
+                <div class="flex items-start gap-3">
+                  <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">
+                    🤖
+                  </div>
+                  <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-xs text-slate-800 space-y-1 max-w-xl">
+                    <p class="font-semibold text-indigo-700 text-[11px]">ALVI Cognitive Assistant (Gemma 4)</p>
+                    <p class="leading-relaxed">
+                      Hello! I can explain the measurements recorded during your check-in, such as pitch variability, low-energy pauses, story recall anchors, or reaction latencies. What would you like to explore?
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chat Input Bar -->
+              <form id="chat-form" class="flex items-center space-x-2 pt-2">
+                <input type="text" id="chat-input" placeholder="Ask a question about your assessment metrics..." class="flex-1 px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white transition">
+                <button type="submit" id="btn-send-chat" class="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-md shadow-indigo-600/20 flex items-center space-x-1.5">
+                  <span>Send</span>
+                  <span>↗</span>
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- TAB 3: GROUNDED MEASUREMENTS INSPECTOR -->
+          <div id="tab-content-ground" class="hidden space-y-4">
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div>
+                  <h3 class="text-base font-bold text-slate-900">Verifiable Grounded Measurements</h3>
+                  <p class="text-xs text-slate-500">Exact numeric values passed into Gemma 4 context to prevent AI hallucination</p>
+                </div>
+                <span class="text-xs font-mono bg-slate-100 text-slate-700 px-3 py-1 rounded-full font-bold">Gemma Context JSON</span>
+              </div>
+              <pre id="ground-json-display" class="bg-slate-900 text-emerald-400 p-4 rounded-2xl text-xs font-mono overflow-x-auto max-h-96 custom-scrollbar leading-relaxed">
+{
+  "notice": "Generate AI insights to display current session's grounded metrics."
+}
+              </pre>
+            </div>
+          </div>
+
+          <!-- Prominent Non-Diagnostic Medical Disclaimer -->
+          <div class="p-5 rounded-3xl bg-slate-100/80 border border-slate-200 text-slate-600 text-xs space-y-1.5">
+            <div class="flex items-center space-x-2 font-bold text-slate-800">
+              <span class="text-amber-500 text-base">⚠️</span>
+              <span>Important Research & Medical Disclaimer</span>
+            </div>
+            <p id="disclaimer-text" class="text-slate-600 leading-relaxed text-[11px]">
+              ALVI is an exploratory research screening tool, NOT a diagnostic medical device. These AI-generated observations describe acoustic and cognitive task patterns for informational and self-monitoring purposes only. They do not constitute a clinical diagnosis, medical prognosis, or formal evaluation of Alzheimer's disease or cognitive impairment. Always consult a licensed neurologist or physician for medical evaluation.
             </p>
           </div>
+
         </section>
 
       </div>
     </main>
   </div>
 
+  <script src="js/session.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/app.js"></script>
   <script src="js/navigation.js"></script>
   <script src="js/insights.js"></script>

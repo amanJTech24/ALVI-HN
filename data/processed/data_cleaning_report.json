@@ -1,0 +1,28 @@
+{
+  "source_dataset_path": "data\\processed\\voice_features.csv",
+  "total_recordings_initial": 324,
+  "total_recordings_excluded": 224,
+  "total_recordings_clean": 100,
+  "exclusion_breakdown": {
+    "exact_hash_duplicates_removed": 152,
+    "contradictory_speaker_recordings_removed": 72,
+    "contradictory_speakers_excluded_count": 32
+  },
+  "clean_dataset_metrics": {
+    "class_distribution": {
+      "dementia": 53,
+      "nodementia": 47
+    },
+    "unique_speakers_total": 80,
+    "dementia_unique_speakers": 39,
+    "nodementia_unique_speakers": 41,
+    "cross_class_speaker_overlap": 0,
+    "numeric_feature_columns": 79,
+    "null_or_nan_values": 0
+  },
+  "training_readiness_verdict": {
+    "status": "APPROVED_FOR_EXPLORATORY_BENCHMARK",
+    "justification": "Dataset has been pruned of all exact hash collisions and contradictory speaker assignments. The cleaned cohort comprises 80 completely independent speakers (39 dementia, 41 nodementia) across 100 recordings with zero speaker overlap, zero duplicate hashes, and 0 missing values. Evaluation must strictly enforce GroupKFold by speaker_id.",
+    "clinical_disclaimer": "DementiaNet labels are unverified exploratory research annotations gathered from public interviews. Trained models represent exploratory benchmark classifiers, NOT validated clinical screening tools."
+  }
+}
