@@ -1,0 +1,400 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALVI — Timmy Character Cinematic Midnight-Navy Environment  (Milestone 4)
+   Harmonizes the approved hand-drawn Timmy doodle with the AURA-inspired theme.
+
+   Changes from M3:
+   - Timmy body: pure-white → soft icy-blue (#9BC5D8) for ALVI visual harmony
+   - Eye whites: warm white → faint off-white (#EEF4F8)
+   - Halo/pod: heavy opaque radial → soft atmospheric glow (no white blob)
+   - Start Over link styling added
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --alvi-abyss: #010817;
+  --alvi-deep-navy: #06152d;
+  --alvi-sapphire: #0a224a;
+  --alvi-electric: #0e5cf7;
+  --alvi-cyan-glow: #00d2ff;
+  --alvi-ice-blue: #bad3ee;
+  --alvi-ice-white: #f2f7ff;
+  --alvi-muted-text: #738aa8;
+
+  /* Timmy icy-blue palette */
+  --timmy-body-fill: #9BC5D8;
+  /* soft desaturated icy-blue */
+  --timmy-body-mid: #7aafc7;
+  /* slightly deeper for depth */
+  --timmy-body-shade: #5d94b0;
+  /* shadow areas */
+  --timmy-eye-white: #EEF4F8;
+  /* off-white — readable, not stark */
+  --timmy-outline: #1a3d5c;
+  /* dark sapphire ink */
+  --timmy-pupil: #0d1f30;
+  /* deep navy pupil */
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--alvi-abyss) !important;
+  color: var(--alvi-ice-white) !important;
+  font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 16px 20px;
+    /* Softer atmospheric glow — no white blob */
+    background: radial-gradient(ellipse 60% 50% at 50% 38%, rgba(0, 90, 160, 0.22) 0%, rgba(6, 21, 45, 0.30) 55%, transparent 80%),
+    var(--alvi-abyss) !important;
+}
+
+/* ── Scene Container ── */
+.timmy-scene {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 2;
+  animation: sceneEntrance 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes sceneEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Brand Label at Top ── */
+.timmy-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--alvi-muted-text);
+  margin-bottom: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.brand-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--alvi-cyan-glow);
+  box-shadow: 0 0 10px var(--alvi-cyan-glow);
+}
+
+/* ── Timmy Art Wrapper ──
+   Soft atmospheric glow — replaces the heavy white radial pod.
+   The icy-blue body now sits directly on the dark background
+   with just a gentle aura behind it.
+── */
+.timmy-art {
+  display: block;
+  width: 100%;
+  max-width: min(360px, 48vh);
+  margin: 2px 0 8px;
+  position: relative;
+  border-radius: 50%;
+  /* No white/cream fill — just a soft blue-cyan ambient glow */
+  background: radial-gradient(circle at 50% 50%,
+      rgba(0, 130, 200, 0.14) 0%,
+      rgba(0, 80, 160, 0.08) 42%,
+      transparent 68%);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.55),
+    0 0 60px rgba(0, 160, 255, 0.10);
+  transition: transform 0.3s ease;
+}
+
+#timmy-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+  filter: drop-shadow(0 3px 10px rgba(0, 10, 30, 0.35));
+}
+
+/* ── Override SVG fill colours via CSS ───────────────────────────────────
+   timmy.css uses class selectors (.t-body, .t-eye-white etc.).
+   We override them here with higher specificity, leaving stroke/geometry intact.
+── */
+
+/* Body: icy blue */
+#timmy-svg .t-body {
+  fill: var(--timmy-body-fill) !important;
+  stroke: var(--timmy-outline) !important;
+  stroke-width: 3px !important;
+}
+
+/* Eye whites: soft off-white */
+#timmy-svg .t-eye-white {
+  fill: var(--timmy-eye-white) !important;
+  stroke: var(--timmy-outline) !important;
+  stroke-width: 2px !important;
+}
+
+/* Pupils: deep navy */
+#timmy-svg .t-pupil {
+  fill: var(--timmy-pupil) !important;
+}
+
+/* Eye shine: crisp white stays */
+#timmy-svg .t-shine {
+  fill: #ffffff !important;
+  opacity: 0.9 !important;
+}
+
+/* Mouth: dark sapphire ink */
+#timmy-svg .t-mouth {
+  stroke: var(--timmy-outline) !important;
+  stroke-width: 3px !important;
+  fill: none !important;
+}
+
+/* Shadow ellipse under body: blend into background */
+#timmy-svg .t-shadow {
+  fill: rgba(0, 10, 30, 0.35) !important;
+}
+
+/* Thought bubble: matches icy theme */
+#timmy-svg .t-think-cloud {
+  fill: rgba(155, 197, 216, 0.80) !important;
+  stroke: var(--timmy-outline) !important;
+  stroke-width: 1.5px !important;
+}
+
+#timmy-svg .t-think-trail {
+  fill: rgba(155, 197, 216, 0.60) !important;
+  stroke: var(--timmy-outline) !important;
+  stroke-width: 1px !important;
+}
+
+#timmy-svg .t-think-dot {
+  fill: var(--timmy-outline) !important;
+}
+
+/* ── Question Heading ── */
+.timmy-q {
+  font-family: 'Manrope', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: clamp(19px, 4vw, 25px) !important;
+  letter-spacing: -0.025em !important;
+  color: var(--alvi-ice-white) !important;
+  text-align: center;
+  margin: 10px 0 12px;
+  text-shadow: 0 2px 20px rgba(0, 180, 255, 0.18);
+}
+
+/* ── Interaction Container ── */
+.timmy-interaction {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── Mood Selection Pills Grid ── */
+.timmy-moods {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 10px;
+  width: 100%;
+  max-width: 420px;
+  margin: 2px 0 10px;
+}
+
+.mood-pill {
+  background: rgba(10, 34, 74, 0.65) !important;
+  border: 1px solid rgba(0, 210, 255, 0.20) !important;
+  color: var(--alvi-ice-blue) !important;
+  font-family: 'Manrope', system-ui, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em;
+  padding: 8px 18px !important;
+  border-radius: 24px !important;
+  cursor: pointer;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  outline: none;
+}
+
+.mood-pill:hover {
+  background: rgba(14, 92, 247, 0.25) !important;
+  border-color: rgba(0, 210, 255, 0.50) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 210, 255, 0.18);
+}
+
+.mood-pill.selected {
+  background: linear-gradient(135deg, rgba(14, 92, 247, 0.6), rgba(0, 210, 255, 0.45)) !important;
+  border-color: var(--alvi-cyan-glow) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.35),
+    0 6px 16px rgba(14, 92, 247, 0.3) !important;
+  transform: translateY(-1px) scale(1.03);
+}
+
+/* ── Empathetic Response Text ── */
+.timmy-response {
+  min-height: 40px;
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  color: #93c5fd !important;
+  text-align: center;
+  max-width: 360px;
+  margin: 6px 0 12px !important;
+  padding: 0 8px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  text-shadow: 0 2px 14px rgba(0, 180, 255, 0.15);
+}
+
+/* ── Actions Container ── */
+.timmy-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 300px;
+}
+
+/* ── Continue Button ── */
+.btn-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 24px !important;
+  border-radius: 28px !important;
+  font-family: 'Manrope', system-ui, sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(186, 211, 238, 0.45) !important;
+  pointer-events: none;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-continue.active {
+  pointer-events: auto;
+  background: linear-gradient(135deg, #0e5cf7 0%, #00b4d8 100%) !important;
+  border-color: rgba(0, 210, 255, 0.5) !important;
+  color: #ffffff !important;
+    box-shadow: 0 6px 24px rgba(14, 92, 247, 0.45),
+    0 0 16px rgba(0, 210, 255, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+.btn-continue.active:hover {
+    0 0 22px rgba(0, 210, 255, 0.4) !important;
+  transform: translateY(-2px);
+}
+
+/* ── Skip Link ── */
+.btn-skip {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--alvi-muted-text) !important;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 12px;
+  transition: color 0.2s, background 0.2s;
+  letter-spacing: 0.02em;
+}
+
+.btn-skip:hover {
+  color: var(--alvi-ice-white) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Start Over Link (subtle, below Skip) ── */
+.btn-startover {
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: rgba(115, 138, 168, 0.55) !important;
+  text-decoration: none;
+  padding: 4px 10px;
+  border-radius: 10px;
+  transition: color 0.2s;
+  letter-spacing: 0.02em;
+  margin-top: 4px;
+}
+
+.btn-startover:hover {
+  color: var(--alvi-muted-text) !important;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── Mobile Responsive Adjustments ── */
+@media (max-width: 480px) {
+  body {
+    padding: 10px 12px;
+  }
+
+  .timmy-art {
+    max-width: min(300px, 44vh);
+  }
+
+  .timmy-moods {
+    gap: 6px 8px;
+  }
+
+  .mood-pill {
+    font-size: 12px !important;
+    padding: 7px 14px !important;
+  }
+
+  .btn-continue {
+    padding: 11px 20px !important;
+    font-size: 13px !important;
+  }
+}
+
+/* ── Reduced-motion override ── */
+@media (prefers-reduced-motion: reduce) {
+
+  .timmy-scene,
+  .timmy-brand,
+  .timmy-interaction {
+    animation: none !important;
+    transition: none !important;
+  }
+}

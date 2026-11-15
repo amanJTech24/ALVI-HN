@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#020810">
+  <meta name="description" content="ALVI — Alzheimer's Voice Intelligence">
+  <title>ALVI — Cognitive Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/intro.css">
+</head>
+<body>
+  <!-- Full-viewport cinematic 3D scene -->
+  <div id="scene-container" aria-label="ALVI anatomical brain visualization"></div>
+
+  <!-- Large elegant ALVI wordmark revealed on the left in Scene 4 -->
+  <div class="brand-hero" id="brand-hero" aria-label="ALVI">
+    <div class="brand-mask">
+      <h1 class="brand-wordmark" id="brand-wordmark">ALVI<span class="brand-dot">.</span></h1>
+    </div>
+    <div class="brand-tagline" id="brand-tagline">Cognitive Voice Intelligence</div>
+  </div>
+
+  <!-- Skip control (normal mode) -->
+  <button class="skip-intro" id="skip-intro" aria-label="Skip to Timmy">
+    Skip <span class="skip-arrow">→</span>
+  </button>
+
+  <!-- Preview mode controls (only visible with ?preview=1) -->
+  <div class="preview-panel" id="preview-panel" aria-label="Developer Preview Controls">
+    <div class="preview-badge">PREVIEW MODE</div>
+    <button class="preview-btn" id="preview-replay" title="Replay sequence from beginning">↺ Replay</button>
+    <button class="preview-btn" id="preview-pause" title="Pause or resume timeline">⏸ Pause</button>
+    <div class="preview-timer" id="preview-timer">0.0s</div>
+  </div>
+
+  <!-- Loading indicator -->
+  <div class="load-overlay" id="load-overlay" role="status" aria-live="polite">
+    <div class="load-spinner"></div>
+    <span id="load-status">Preparing visualization…</span>
+    <a href="timmy.html" class="load-fallback" id="load-fallback">Continue to Timmy →</a>
+  </div>
+
+  <!-- Embedded Model & Manifest Data for Zero-CORS Direct File Opening -->
+  <script src="js/manifest_data.js"></script>
+  <script src="js/brain_model_data.js"></script>
+
+  <!-- Intro Controller -->
+  <script src="js/intro.js"></script>
+
+  <!-- Three.js + Addons (with Draco) via CDN Importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Inline module launcher (Bypasses external module file:// origin: null restrictions) -->
+  <script type="module">
+    try {
+      const [THREE, { GLTFLoader }, { DRACOLoader }] = await Promise.all([
+        import('three'),
+        import('three/addons/loaders/GLTFLoader.js'),
+        import('three/addons/loaders/DRACOLoader.js')
+      ]);
+
+      if (window.startAlviCinematicIntro) {
+        window.startAlviCinematicIntro(THREE, GLTFLoader, DRACOLoader);
+      } else {
+        console.error('startAlviCinematicIntro is not defined');
+      }
+    } catch (err) {
+      console.error('Module initialization error:', err);
+      const status = document.getElementById('load-status');
+      if (status) status.textContent = 'Visualization initialization error: ' + err.message;
+    }
+  </script>
+</body>
+</html>
