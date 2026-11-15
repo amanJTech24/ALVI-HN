@@ -21,6 +21,8 @@ from backend.routes.comparison import router as comparison_router
 from backend.routes.games import router as games_router
 from backend.routes.insights import insights_router
 from backend.routes.learning_path import router as learning_router
+from backend.routes.hardware import hardware_router
+from backend.routes.neuropen import neuropen_router
 from backend.routes.patterns import patterns_router
 from backend.routes.story import router as story_router
 
@@ -53,6 +55,8 @@ app.include_router(comparison_router)
 app.include_router(learning_router)
 app.include_router(patterns_router)
 app.include_router(insights_router)
+app.include_router(hardware_router)
+app.include_router(neuropen_router)
 
 MAX_UPLOAD_SIZE_BYTES = 25 * 1024 * 1024  # 25 MB max audio upload
 SUPPORTED_EXTENSIONS = {".wav", ".webm", ".mp3", ".ogg", ".m4a", ".flac"}
@@ -89,6 +93,7 @@ def root() -> Dict[str, Any]:
         "insights_status_endpoint": "/api/insights/status",
         "insights_generate_endpoint": "/api/insights/generate",
         "insights_chat_endpoint": "/api/insights/chat",
+        "hardware_status_endpoint": "/api/hardware/status",
         "docs_url": "/docs",
         "ml_model": {
             "name": model_name,

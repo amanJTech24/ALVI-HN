@@ -994,7 +994,25 @@ window.ALVI = window.ALVI || {};
     fetchInsightStatus,
     generateInsights,
     sendInsightChatMessage,
-    get isUploading() { return isUploading; }
+    get isUploading() { return isUploading; },
+
+    // Hardware API methods
+    fetchHardwareStatus: async function() {
+        try { const r = await fetch('http://127.0.0.1:8765/api/hardware/status'); return r.ok ? r.json() : null; }
+        catch { return null; }
+    },
+    fetchHardwareSessions: async function(limit=20) {
+        try { const r = await fetch(`http://127.0.0.1:8765/api/hardware/sessions?limit=${limit}`); return r.ok ? r.json() : []; }
+        catch { return []; }
+    },
+    postHardwareEvent: async function(event) {
+        const r = await fetch('http://127.0.0.1:8765/api/hardware/events', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(event)});
+        return r.json();
+    },
+    updateHardwareSettings: async function(deviceId, settings) {
+        const r = await fetch(`http://127.0.0.1:8765/api/hardware/settings/${deviceId}`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(settings)});
+        return r.json();
+    }
   };
 
   // Expose to both window.ALVI_API and window.ALVI.api for backwards compatibility

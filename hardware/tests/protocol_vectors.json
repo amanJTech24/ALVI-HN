@@ -1,0 +1,126 @@
+{
+  "protocol_version": "1.0",
+  "description": "ALVI Hardware Protocol JSON Test Vectors for ESP32 and Python Serial Bridge",
+  "outgoing_messages": [
+    {
+      "name": "HELLO",
+      "vector": {
+        "msg_type": "HELLO",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "device_name": "ALVI Pocket Companion",
+        "firmware_version": "1.0.0",
+        "seq_num": 1
+      }
+    },
+    {
+      "name": "DEVICE_STATUS",
+      "vector": {
+        "msg_type": "DEVICE_STATUS",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "battery_pct": 100,
+        "wifi_connected": false,
+        "pending_events": 0,
+        "seq_num": 2
+      }
+    },
+    {
+      "name": "MOOD_SELECTED",
+      "vector": {
+        "msg_type": "MOOD_SELECTED",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "session_id": "sess_default",
+        "event_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+        "seq_num": 3,
+        "payload": {
+          "mood_code": 1,
+          "mood_name": "Happy"
+        }
+      }
+    },
+    {
+      "name": "MEMORY_RESULT",
+      "vector": {
+        "msg_type": "MEMORY_RESULT",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "session_id": "sess_default",
+        "event_id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+        "seq_num": 4,
+        "payload": {
+          "max_level": 4,
+          "correct_count": 8,
+          "error_count": 1,
+          "duration_ms": 15420,
+          "completed": true
+        }
+      }
+    },
+    {
+      "name": "REACTION_RESULT",
+      "vector": {
+        "msg_type": "REACTION_RESULT",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "session_id": "sess_default",
+        "event_id": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+        "seq_num": 5,
+        "payload": {
+          "median_rt_ms": 284,
+          "false_starts": 0,
+          "missed": 0,
+          "trial_count": 5,
+          "duration_ms": 12800,
+          "completed": true
+        }
+      }
+    },
+    {
+      "name": "TIME_SYNC_REQ",
+      "vector": {
+        "msg_type": "TIME_SYNC_REQ",
+        "protocol_version": "1.0",
+        "device_id": "alvi-hw-001",
+        "seq_num": 6
+      }
+    }
+  ],
+  "incoming_commands": [
+    {
+      "name": "TIME_SYNC",
+      "vector": {
+        "cmd": "TIME_SYNC",
+        "protocol_version": "1.0",
+        "epoch": 1794738600
+      }
+    },
+    {
+      "name": "SYNC_ACK",
+      "vector": {
+        "cmd": "SYNC_ACK",
+        "protocol_version": "1.0",
+        "event_id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d"
+      }
+    },
+    {
+      "name": "PAIR_REQUEST",
+      "vector": {
+        "cmd": "PAIR_REQUEST",
+        "protocol_version": "1.0",
+        "session_id": "sess_browser_20261114"
+      }
+    },
+    {
+      "name": "VOICE_STATUS",
+      "vector": {
+        "cmd": "VOICE_RESULT",
+        "protocol_version": "1.0",
+        "status": "completed",
+        "prediction": "Healthy_Control",
+        "confidence": 0.82
+      }
+    }
+  ]
+}

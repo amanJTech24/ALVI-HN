@@ -101,3 +101,20 @@ desktop.ini
 *.min.js
 *.min.css
 *.map
+
+# ── Phase 12: Hardware Companion ──────────────
+hardware/alvi_pocket_companion/config.h
+hardware_events.db
+hardware_events.db.bak*
+*.db
+*.db-shm
+*.db-wal
+
+# NeuroPen uploaded files (may contain personal health data)
+data/neuropen_uploads/
+
+# Firmware backups
+*.ino.bak
+*.cpp.bak
+*.h.bak
+*.py.bak
