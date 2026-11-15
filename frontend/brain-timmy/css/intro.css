@@ -1,0 +1,329 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   ALVI — Cinematic Introduction: Approved Anatomical Brain Scene
+   Midnight navy abyss, elegant left ALVI wordmark, cinematic right brain
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  color-scheme: dark;
+  --abyss: #020810;
+  --ice-white: #f2f7ff;
+  --cyan-glow: #00d2ff;
+  --cyan-muted: #4ba3e3;
+  --text-muted: #738aa8;
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--abyss);
+  color: var(--ice-white);
+  font-family: 'Manrope', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Fullscreen 3D Scene Viewport ── */
+#scene-container {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+}
+
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+
+  /* ── Middle-Left Large ALVI Wordmark (Scene 4) ── */
+  .brand-hero {
+    position: fixed;
+    left: clamp(48px, 12vw, 200px);
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+    .brand-hero.is-revealed {
+      opacity: 1;
+      transform: translateY(-50%);
+    }
+
+    .brand-mask {
+      overflow: hidden;
+      padding-bottom: 8px;
+    }
+
+    .brand-wordmark {
+      font-family: 'Manrope', sans-serif;
+      font-weight: 800;
+      font-size: clamp(64px, 8.5vw, 124px);
+      letter-spacing: -0.045em;
+      line-height: 0.95;
+      color: var(--ice-white);
+      text-shadow: 0 4px 40px rgba(0, 180, 255, 0.25);
+      transform: translateY(105%);
+      transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .brand-hero.is-revealed .brand-wordmark {
+      transform: translateY(0);
+    }
+
+    .brand-dot {
+      color: var(--cyan-glow);
+      text-shadow: 0 0 24px var(--cyan-glow);
+    }
+
+    .brand-tagline {
+      font-family: 'Manrope', sans-serif;
+      font-size: clamp(11px, 1.0vw, 13.5px);
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-top: 14px;
+      margin-left: 6px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1) 0.35s,
+        transform 1.0s cubic-bezier(0.16, 1, 0.3, 1) 0.35s;
+    }
+
+    .brand-hero.is-revealed .brand-tagline {
+      opacity: 0.70;
+      transform: translateY(0);
+    }
+
+    /* ── Skip Intro Button ── */
+    .skip-intro {
+      position: fixed;
+      bottom: 30px;
+      right: 36px;
+      z-index: 25;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(210, 230, 255, 0.7);
+      padding: 8px 20px;
+      border-radius: 24px;
+      font-size: 11.5px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.8s ease, background 0.25s, color 0.25s, border-color 0.25s;
+      font-family: inherit;
+      backdrop-filter: blur(12px);
+    }
+
+    .skip-intro.is-visible {
+      opacity: 1;
+    }
+
+    .skip-intro:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-color: rgba(0, 210, 255, 0.35);
+    }
+
+    .skip-arrow {
+      display: inline-block;
+      margin-left: 6px;
+      transition: transform 0.25s ease;
+    }
+
+    .skip-intro:hover .skip-arrow {
+      transform: translateX(4px);
+    }
+
+    /* ── Developer Preview Panel (?preview=1) ── */
+    .preview-panel {
+      position: fixed;
+      bottom: 26px;
+      left: 28px;
+      z-index: 30;
+      display: none;
+      /* enabled via JS if ?preview=1 */
+      align-items: center;
+      gap: 10px;
+      background: rgba(4, 14, 30, 0.85);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(0, 210, 255, 0.25);
+      padding: 8px 14px;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .preview-panel.is-active {
+      display: flex;
+    }
+
+    .preview-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      background: rgba(0, 210, 255, 0.15);
+      color: var(--cyan-glow);
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 210, 255, 0.3);
+    }
+
+    .preview-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--ice-white);
+      padding: 5px 12px;
+      border-radius: 14px;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preview-btn:hover {
+      background: rgba(0, 210, 255, 0.2);
+      border-color: var(--cyan-glow);
+    }
+
+    .preview-timer {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--cyan-muted);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    /* ── Loader Overlay ── */
+    .load-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: var(--abyss);
+      color: var(--text-muted);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      transition: opacity 0.5s ease, visibility 0.5s;
+    }
+
+    .load-overlay.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .load-spinner {
+      width: 32px;
+      height: 32px;
+      border: 2px solid rgba(0, 210, 255, 0.15);
+      border-top-color: var(--cyan-glow);
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
+    }
+
+    .load-fallback {
+      display: none;
+      margin-top: 10px;
+      color: var(--cyan-glow);
+      font-size: 12px;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .load-overlay.is-error .load-fallback {
+      display: block;
+    }
+
+    .load-overlay.is-error .load-spinner {
+      display: none;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ── Cross-Fade Transition Overlay ── */
+    .transition-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--abyss);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .transition-overlay.is-active {
+      opacity: 1;
+    }
+
+    /* ── Responsive Mobile Framing ── */
+    @media (max-width: 768px) {
+      .brand-hero {
+        top: 14%;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .brand-hero.is-revealed {
+        transform: translateX(-50%);
+      }
+
+      .brand-wordmark {
+        font-size: clamp(48px, 14vw, 76px);
+      }
+
+      .preview-panel {
+        bottom: 16px;
+        left: 16px;
+        padding: 6px 10px;
+        gap: 6px;
+      }
+
+      .skip-intro {
+        bottom: 16px;
+        right: 18px;
+        padding: 7px 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
