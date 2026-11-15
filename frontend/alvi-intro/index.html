@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#010817">
+  <meta name="description" content="ALVI — Cognitive Intelligence Introduction">
+  <title>ALVI — Welcome Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="intro.css">
+</head>
+<body>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════
+       STAGE 1: 3D ANATOMICAL BRAIN CINEMATIC INTRODUCTION
+       ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="stage-brain" aria-label="ALVI 3D Anatomical Brain Introduction">
+    <!-- Full-viewport cinematic 3D WebGL scene -->
+    <div id="scene-container" aria-label="ALVI anatomical brain visualization"></div>
+
+    <!-- Elegant ALVI wordmark revealed on left in Scene 4 -->
+    <div class="brand-hero" id="brand-hero" aria-label="ALVI">
+      <div class="brand-mask">
+        <h1 class="brand-wordmark" id="brand-wordmark">ALVI<span class="brand-dot">.</span></h1>
+      </div>
+      <div class="brand-tagline" id="brand-tagline">Cognitive Voice Intelligence</div>
+    </div>
+
+    <!-- Skip controls bar -->
+    <nav class="intro-controls-bar" aria-label="Introduction navigation controls">
+      <button class="btn-skip-pill" id="skip-to-timmy" aria-label="Skip to Timmy companion">
+        Meet Timmy <span class="skip-arrow">→</span>
+      </button>
+      <a href="../dashboard.html" class="btn-skip-direct" id="skip-to-dashboard" aria-label="Skip directly to dashboard">
+        Skip to Dashboard
+      </a>
+    </nav>
+
+    <!-- Hidden compat element for intro.js -->
+    <button id="skip-intro" style="display:none;" aria-hidden="true"></button>
+
+    <!-- Loading overlay with fallback -->
+    <div class="load-overlay" id="load-overlay" role="status" aria-live="polite">
+      <div class="load-spinner"></div>
+      <span id="load-status">Preparing visualization…</span>
+      <button type="button" class="load-fallback" id="load-fallback" onclick="window.ALVI_INTRO_ON_SKIP && window.ALVI_INTRO_ON_SKIP()">Continue to Timmy →</button>
+    </div>
+  </section>
+
+  <!-- ═════════════════════════════════════════════════════════════════════════
+       STAGE 2: TIMMY INTERACTIVE COMPANION INTRO & MOOD CHECK-IN
+       ═════════════════════════════════════════════════════════════════════════ -->
+  <section id="stage-timmy" aria-label="Timmy Cognitive Wellness Companion">
+    <main class="timmy-scene" role="main">
+
+      <!-- BRAND LABEL -->
+      <div class="timmy-brand" aria-label="ALVI Cognitive Wellness">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>ALVI</span>
+      </div>
+
+      <!-- TIMMY: Large Abstract Thinking Doodle (SVG) -->
+      <figure class="timmy-art" role="img" aria-label="Timmy, ALVI's thinking companion. His eyes follow your cursor.">
+        <svg id="timmy-svg"
+             viewBox="0 0 460 460"
+             xmlns="http://www.w3.org/2000/svg"
+             aria-hidden="true">
+
+          <defs>
+            <!-- Left eye clip -->
+            <clipPath id="clip-left-eye">
+              <ellipse cx="158" cy="218" rx="37" ry="51"/>
+            </clipPath>
+            <!-- Right eye clip -->
+            <clipPath id="clip-right-eye">
+              <ellipse cx="285" cy="224" rx="43" ry="48"/>
+            </clipPath>
+          </defs>
+
+          <!-- Soft grounding shadow -->
+          <ellipse class="t-shadow" cx="216" cy="450" rx="88" ry="10"/>
+
+          <!-- BODY OUTLINE: hand-drawn irregular blob -->
+          <path id="timmy-body"
+                class="t-body"
+                d="M 215,20
+                   C 278,15  345,52  372,108
+                   C 396,158  400,215  393,268
+                   C 385,322  365,368  328,398
+                   C 290,428  242,440  195,437
+                   C 148,434  102,418  70,386
+                   C 36,352  20,304  20,254
+                   C 20,202  38,152  68,112
+                   C 100,70  152,25  215,20 Z"/>
+
+          <!-- LEFT EYE -->
+          <g id="timmy-left-eye"
+             class="t-eye-group"
+             style="transform-origin: 158px 218px;">
+            <ellipse class="t-eye-white"
+                     cx="158" cy="218" rx="37" ry="51"
+                     transform="rotate(-6 158 218)"/>
+            <g clip-path="url(#clip-left-eye)">
+              <g id="timmy-pupil-l" class="t-pupil-wrap">
+                <ellipse class="t-pupil"  cx="158" cy="218" rx="13" ry="17"/>
+                <circle  class="t-shine"  cx="151" cy="211"  r="3.8"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- RIGHT EYE -->
+          <g id="timmy-right-eye"
+             class="t-eye-group"
+             style="transform-origin: 285px 224px;">
+            <ellipse class="t-eye-white"
+                     cx="285" cy="224" rx="43" ry="48"
+                     transform="rotate(5 285 224)"/>
+            <g clip-path="url(#clip-right-eye)">
+              <g id="timmy-pupil-r" class="t-pupil-wrap">
+                <ellipse class="t-pupil"  cx="285" cy="224" rx="15" ry="19"/>
+                <circle  class="t-shine"  cx="277" cy="216"  r="4.2"/>
+              </g>
+            </g>
+          </g>
+
+          <!-- MOUTH -->
+          <path id="timmy-mouth"
+                class="t-mouth"
+                d="M 196,340 Q 220,347 244,340"/>
+
+          <!-- THOUGHT BUBBLE -->
+          <g id="timmy-think" class="t-think" aria-hidden="true">
+            <circle class="t-think-trail" cx="372" cy="112" r="4.5"/>
+            <circle class="t-think-trail" cx="393"  cy="90" r="7"/>
+            <circle class="t-think-cloud" cx="415"  cy="68" r="20"/>
+            <circle class="t-think-dot"   cx="408"  cy="68" r="2.6"/>
+            <circle class="t-think-dot"   cx="415"  cy="68" r="2.6"/>
+            <circle class="t-think-dot"   cx="422"  cy="68" r="2.6"/>
+          </g>
+
+        </svg>
+      </figure>
+
+      <!-- TIMMY INTERACTION LAYER -->
+      <div class="timmy-interaction">
+
+        <div class="timmy-intro-greeting">
+          <h2 class="timmy-greeting-title">Hello! I'm Timmy, your ALVI companion.</h2>
+          <p class="timmy-greeting-sub">Let's explore your cognitive wellness journey!</p>
+          <button id="timmy-voice-btn" class="timmy-voice-btn" type="button" aria-label="Play Timmy voice greeting">
+            <span>🔊 Speak Greeting</span>
+          </button>
+        </div>
+
+        <h1 class="timmy-q">How are you feeling today?</h1>
+
+        <div class="timmy-moods" role="group" aria-label="Select your current mood">
+          <button class="mood-pill" type="button" data-mood="happy"   aria-pressed="false" style="--i:0">Happy</button>
+          <button class="mood-pill" type="button" data-mood="calm"    aria-pressed="false" style="--i:1">Calm</button>
+          <button class="mood-pill" type="button" data-mood="tired"   aria-pressed="false" style="--i:2">Tired</button>
+          <button class="mood-pill" type="button" data-mood="sad"     aria-pressed="false" style="--i:3">Sad</button>
+          <button class="mood-pill" type="button" data-mood="anxious" aria-pressed="false" style="--i:4">Anxious</button>
+          <button class="mood-pill" type="button" data-mood="okay"    aria-pressed="false" style="--i:5">Okay</button>
+        </div>
+
+        <!-- Response after mood selection -->
+        <p id="timmy-response" class="timmy-response" aria-live="polite" aria-atomic="true"></p>
+
+        <!-- Navigation actions: Continue to Dashboard -->
+        <div class="timmy-actions">
+          <a id="timmy-continue"
+             href="../dashboard.html"
+             class="btn-continue"
+             role="button"
+             aria-label="Continue to ALVI Dashboard">
+            Continue to ALVI <span aria-hidden="true">→</span>
+          </a>
+          <a id="skip-timmy"
+             href="../dashboard.html"
+             class="btn-skip"
+             aria-label="Skip mood check-in and enter dashboard">Skip for now</a>
+          <button id="intro-replay"
+                  type="button"
+                  class="btn-startover"
+                  aria-label="Replay the ALVI introduction from the beginning">↺ Replay Introduction</button>
+        </div>
+
+      </div>
+
+    </main>
+  </section>
+
+  <!-- Embedded Model & Manifest Data from original brain-timmy assets -->
+  <script src="../brain-timmy/js/manifest_data.js"></script>
+  <script src="../brain-timmy/js/brain_model_data.js"></script>
+
+  <!-- Intro 3D Brain choreography controller -->
+  <script src="../brain-timmy/js/intro.js"></script>
+
+  <!-- Stage Orchestration Controller -->
+  <script src="intro.js"></script>
+
+  <!-- Three.js + Addons (with Draco) via CDN Importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Inline module launcher for Three.js GLTF + Draco -->
+  <script type="module">
+    try {
+      const [THREE, { GLTFLoader }, { DRACOLoader }] = await Promise.all([
+        import('three'),
+        import('three/addons/loaders/GLTFLoader.js'),
+        import('three/addons/loaders/DRACOLoader.js')
+      ]);
+
+      if (window.startAlviCinematicIntro) {
+        window.startAlviCinematicIntro(THREE, GLTFLoader, DRACOLoader);
+      } else {
+        console.error('startAlviCinematicIntro is not defined');
+      }
+    } catch (err) {
+      console.error('Module initialization error:', err);
+      const status = document.getElementById('load-status');
+      if (status) status.textContent = 'Visualization initialization error: ' + err.message;
+    }
+  </script>
+</body>
+</html>

@@ -118,3 +118,4 @@ data/neuropen_uploads/
 *.cpp.bak
 *.h.bak
 *.py.bak
+*.original_dashboard_copy

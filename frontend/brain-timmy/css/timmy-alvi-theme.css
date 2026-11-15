@@ -198,6 +198,28 @@ body {
   fill: var(--timmy-outline) !important;
 }
 
+/* ── Intro Greeting ── */
+.timmy-intro-greeting {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.timmy-greeting-title {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(1.15rem, 3.2vw, 1.45rem);
+  font-weight: 800;
+  color: var(--alvi-ice-white);
+  margin: 0 0 6px 0;
+  letter-spacing: -0.01em;
+}
+.timmy-greeting-sub {
+  font-family: 'Manrope', sans-serif !important;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  color: var(--alvi-cyan-glow);
+  margin: 0;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
 /* ── Question Heading ── */
 .timmy-q {
   font-family: 'Manrope', sans-serif !important;

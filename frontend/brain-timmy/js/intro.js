@@ -678,6 +678,10 @@ window.startAlviCinematicIntro = function(THREE, GLTFLoader, DRACOLoader) {
 
   // ── Navigation Transition (Normal Mode: to Timmy) ────────────────────────
   function transitionToTimmy() {
+    if (typeof window.ALVI_INTRO_ON_COMPLETE === 'function') {
+      window.ALVI_INTRO_ON_COMPLETE();
+      return;
+    }
     const overlay = document.createElement('div');
     overlay.className = 'transition-overlay';
     document.body.appendChild(overlay);
@@ -692,6 +696,10 @@ window.startAlviCinematicIntro = function(THREE, GLTFLoader, DRACOLoader) {
 
   function skipImmediately() {
     hasNavigated = true;
+    if (typeof window.ALVI_INTRO_ON_SKIP === 'function') {
+      window.ALVI_INTRO_ON_SKIP();
+      return;
+    }
     window.location.href = 'timmy.html';
   }
 
